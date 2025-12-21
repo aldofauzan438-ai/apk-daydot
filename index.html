@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Dashboard</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+<div id="app">
+  <header class="top">
+    <h2>Aplikasi Daydot</h2>
+  </header>
+
+  <section class="summary">
+    <div class="box notif">
+      <h1>0</h1>
+      <p>Buat Baru</p>
+    </div>
+    <div class="box todo">
+      <h1>1</h1>
+      <p>Template yang sudah dibuat</p>
+    </div>
+  </section>
+
+  <section class="card">
+    <h3>Daftar Expired Item</h3>
+    <div class="grid">
+      <div class="item" v-for="menu in menus" :key="menu">
+        <div class="icon"></div>
+        <span>{{menu}}</span>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="active">Home</div>
+    
+  </footer>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
