@@ -1,42 +1,56 @@
-<div id="app">
-  <div class="header">
-    <h1>Tomoro Coffee</h1>
-  </div>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard Daydot</title>
 
-  <!-- Buat Baru Template -->
-  <div class="card pink" @click="goTemplate">
-    <button class="btn-plus">+</button>
-    <div class="card-title">Buat Baru</div>
-    <div class="card-subtitle">Template</div>
-  </div>
+  <!-- CSS -->
+  <link rel="stylesheet" href="style.css" />
 
-  <!-- Buat Baru Expired -->
-  <div class="card yellow" @click="goExpired">
-    <button class="btn-plus">+</button>
-    <div class="card-title">Buat Baru</div>
-    <div class="card-subtitle">Daftar Expired Item</div>
-  </div>
+  <!-- Vue CDN (WAJIB) -->
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+  <div id="app" class="container">
 
-  <!-- Template Dibuat -->
-  <div class="card white">
-    <div class="stat-number">1</div>
-    <div class="card-subtitle">Template Dibuat</div>
-  </div>
+    <h2 class="title">Tomoro Coffee</h2>
 
-  <!-- Daftar Expired -->
-  <div class="card white">
-    <div class="card-title">Daftar Expired Item</div>
-    <div class="expired-list">
-      <div class="expired-item">Food</div>
-      <div class="expired-item">Syrup</div>
-      <div class="expired-item">Powder</div>
-      <div class="expired-item">Beans</div>
-      <div class="expired-item">Inv Adjustment</div>
-      <div class="expired-item">Return Order</div>
-      <div class="expired-item">HQ Order</div>
-      <div class="expired-item">Records</div>
+    <!-- CARD BUAT BARU -->
+    <div class="card pink" @click="goTemplate">
+      <div>
+        <h3>Buat Baru</h3>
+        <p>Template</p>
+      </div>
+      <button class="plus">+</button>
     </div>
+
+    <div class="card yellow" @click="goExpired">
+      <div>
+        <h3>Buat Baru</h3>
+        <p>Daftar Expired Item</p>
+      </div>
+      <button class="plus">+</button>
+    </div>
+
+    <!-- INFO -->
+    <div class="info">
+      <h1>1</h1>
+      <p>Template Dibuat</p>
+    </div>
+
+    <!-- LIST -->
+    <div class="list">
+      <h3>Daftar Expired Item</h3>
+      <ul>
+        <li v-for="item in items" :key="item">{{ item }}</li>
+      </ul>
+    </div>
+
+    <footer>By : Aldo Fauzan</footer>
   </div>
 
-  <footer>By : Aldo Fauzan</footer>
-</div>
+  <!-- JS -->
+  <script src="app.js"></script>
+</body>
+</html>

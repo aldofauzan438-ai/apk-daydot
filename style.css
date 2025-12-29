@@ -1,148 +1,73 @@
-/* ===== RESET ===== */
 * {
-  margin: 0;
-  padding: 0;
   box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent;
+  font-family: system-ui, sans-serif;
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, Helvetica, Arial, sans-serif;
-  background: #f4faf8;
-  color: #1f2937;
+  margin: 0;
+  background: #f6fbfa;
 }
 
-/* ===== CONTAINER ===== */
-#app {
-  max-width: 430px; /* aman utk HP */
-  margin: 0 auto;
+.container {
+  max-width: 420px;
+  margin: auto;
   padding: 16px;
 }
 
-/* ===== HEADER ===== */
-.header {
-  margin-bottom: 20px;
-}
-
-.header h1 {
-  font-size: 20px;
-  font-weight: 700;
-}
-
-.header p {
-  font-size: 14px;
-  color: #6b7280;
-}
-
-/* ===== CARD UMUM ===== */
-.card {
-  position: relative;
-  border-radius: 20px;
-  padding: 20px;
+.title {
   margin-bottom: 16px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+}
+
+.card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px;
+  border-radius: 16px;
+  margin-bottom: 12px;
+  cursor: pointer;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .card:active {
-  transform: scale(0.98);
-}
-
-/* ===== CARD WARNA ===== */
-.card.pink {
-  background: #fde8e8;
-}
-
-.card.yellow {
-  background: #fef3c7;
-}
-
-.card.white {
-  background: #ffffff;
-}
-
-/* ===== TOMBOL PLUS ===== */
-.btn-plus {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: #ffffff;
-  border: none;
-  font-size: 22px;
-  font-weight: 600;
-  cursor: pointer;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-
-.btn-plus:active {
-  transform: scale(0.9);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-}
-
-/* ===== JUDUL CARD ===== */
-.card-title {
-  font-size: 18px;
-  font-weight: 700;
-  margin-bottom: 4px;
-}
-
-.card-subtitle {
-  font-size: 14px;
-  color: #6b7280;
-}
-
-/* ===== ANGKA STAT ===== */
-.stat-number {
-  font-size: 32px;
-  font-weight: 800;
-  margin-bottom: 4px;
-}
-
-/* ===== LIST EXPIRED ===== */
-.expired-list {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-top: 12px;
-}
-
-.expired-item {
-  background: #f3f4f6;
-  padding: 12px;
-  border-radius: 12px;
-  text-align: center;
-  font-size: 14px;
-  font-weight: 500;
-  transition: background 0.15s ease, transform 0.15s ease;
-}
-
-.expired-item:active {
-  background: #e5e7eb;
   transform: scale(0.97);
 }
 
-/* ===== FOOTER ===== */
+.pink {
+  background: #ffeaea;
+}
+
+.yellow {
+  background: #fff3cc;
+}
+
+.plus {
+  border: none;
+  background: white;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  font-size: 22px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.info {
+  margin: 20px 0;
+}
+
+.list {
+  background: white;
+  padding: 16px;
+  border-radius: 16px;
+}
+
+.list ul {
+  padding-left: 18px;
+}
+
 footer {
   text-align: center;
   font-size: 12px;
-  color: #9ca3af;
-  margin-top: 24px;
-}
-
-/* ===== RESPONSIVE EXTRA ===== */
-@media (max-width: 360px) {
-  .card {
-    padding: 16px;
-  }
-
-  .btn-plus {
-    width: 40px;
-    height: 40px;
-    font-size: 20px;
-  }
+  color: #aaa;
+  margin-top: 20px;
 }

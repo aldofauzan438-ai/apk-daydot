@@ -3,9 +3,7 @@ const { createApp } = Vue;
 createApp({
   data() {
     return {
-      buatBaru: 0,
-      template: 1,
-      expiredItems: [
+      items: [
         "Food",
         "Syrup",
         "Powder",
@@ -18,8 +16,11 @@ createApp({
     };
   },
   methods: {
-    goTo(page) {
-      window.location.href = page;
+    goTemplate() {
+      window.location.href = "template.html";
+    },
+    goExpired() {
+      window.location.href = "detail.html";
     }
   }
-}).mount('#app');
+}).mount("#app");
