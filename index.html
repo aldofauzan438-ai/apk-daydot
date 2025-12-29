@@ -38,6 +38,15 @@
   </section>
 
   <!-- EXPIRED -->
+  <div class="input-box">
+  <input
+    v-model="newExpired"
+    placeholder="Nama expired item"
+  />
+  <button @click="addExpired">Tambah</button>
+</div>
+
+
  <div
   class="item clickable"
   v-for="(e,i) in expired"

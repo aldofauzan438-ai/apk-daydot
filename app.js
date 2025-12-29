@@ -1,88 +1,81 @@
-/* ======================
-   DASHBOARD
-====================== */
-if (document.getElementById("app")) {
-  Vue.createApp({
-    data() {
-      return {
-        newTemplate: "",
-        templates: JSON.parse(localStorage.getItem("templates")) || [],
-        expired: JSON.parse(localStorage.getItem("expired")) || [
-          { id: 1, name: "Food" },
-          { id: 2, name: "Syrup" },
-          { id: 3, name: "Powder" },
-          { id: 4, name: "Beans" }
-        ]
-      };
-    },
-    methods: {
-      addTemplate() {
-        if (!this.newTemplate) return;
-        this.templates.push({
-          id: Date.now(),
-          name: this.newTemplate
-        });
-        this.newTemplate = "";
-        localStorage.setItem("templates", JSON.stringify(this.templates));
-      },
-      editTemplate(i) {
-        const name = prompt("Edit nama template", this.templates[i].name);
-        if (name) {
-          this.templates[i].name = name;
-          localStorage.setItem("templates", JSON.stringify(this.templates));
-        }
-      },
-      deleteTemplate(i) {
-        if (confirm("Hapus template?")) {
-          this.templates.splice(i, 1);
-          localStorage.setItem("templates", JSON.stringify(this.templates));
-        }
-      },
-      goExpiredDetail(id) {
-  window.location.href = `expired-detail.html?id=${id}`
-  }
-  
+const { createApp } = Vue
+
+createApp({
+  data() {
+    return {
+      newTemplate: '',
+      newExpired: '',
+      templates: JSON.parse(localStorage.getItem('templates')) || [],
+      expired: JSON.parse(localStorage.getItem('expired')) || []
     }
-  }).mount("#app");
-}
+  },
 
-/* ======================
-   EXPIRED DETAIL
-====================== */
-if (document.getElementById("expiredApp")) {
-  Vue.createApp({
-    data() {
-      return {
-        category: localStorage.getItem("activeExpired"),
-        itemName: "",
-        selected: "",
-        items: JSON.parse(localStorage.getItem("expired_items")) || [],
-        options: [
-          { label: "24 Jam" },
-          { label: "2 Hari" },
-          { label: "3 Hari" },
-          { label: "7 Hari" },
-          { label: "14 Hari" },
-          { label: "1 Bulan" },
-          { label: "3 Bulan" },
-          { label: "6 Bulan" }
-        ]
-      };
+  methods: {
+    go(page) {
+      window.location.href = page
     },
-    methods: {
-      addItem() {
-        if (!this.itemName || !this.selected) return;
 
-        this.items.push({
-          name: this.itemName,
-          expired: this.selected,
-          category: this.category
-        });
+    /* TEMPLATE */
+    addTemplate() {
+      if (!this.newTemplate) return
+      this.templates.push({
+        id: Date.now(),
+        name: this.newTemplate
+      })
+      this.newTemplate = ''
+      this.save()
+    },
 
-        localStorage.setItem("expired_items", JSON.stringify(this.items));
-        this.itemName = "";
-        this.selected = "";
+    editTemplate(i) {
+      const name = prompt('Edit nama template', this.templates[i].name)
+      if (name) {
+        this.templates[i].name = name
+        this.save()
       }
+    },
+
+    deleteTemplate(i) {
+      if (confirm('Hapus template?')) {
+        this.templates.splice(i, 1)
+        this.save()
+      }
+    },
+
+    /* EXPIRED */
+    addExpired() {
+      if (!this.newExpired) return
+      this.expired.push({
+        id: Date.now(),
+        name: this.newExpired
+      })
+      this.newExpired = ''
+      this.save()
+    },
+
+    editExpired(i) {
+      const name = prompt('Edit nama expired item', this.expired[i].name)
+      if (name) {
+        this.expired[i].name = name
+        this.save()
+      }
+    },
+
+    deleteExpired(i) {
+      if (confirm('Hapus expired item?')) {
+        this.expired.splice(i, 1)
+        this.save()
+      }
+    },
+
+    openExpired(item) {
+      // arahkan ke halaman detail
+      localStorage.setItem('currentExpired', JSON.stringify(item))
+      window.location.href = 'expired-detail.html'
+    },
+
+    save() {
+      localStorage.setItem('templates', JSON.stringify(this.templates))
+      localStorage.setItem('expired', JSON.stringify(this.expired))
     }
-  }).mount("#expiredApp");
-}
+  }
+}).mount('#app')
