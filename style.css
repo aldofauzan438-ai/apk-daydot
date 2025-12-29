@@ -2,80 +2,110 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: Arial, sans-serif;
+  font-family: 'Inter', system-ui, sans-serif;
 }
 
 body {
-  background: #f6f6f6;
+  background: #f4f5f7;
+  color: #222;
 }
 
-/* Container utama */
 #app {
-  padding: 12px;
+  padding: 16px;
+  max-width: 420px;
+  margin: auto;
 }
 
-/* Card utama */
+/* Header */
+.header {
+  margin-bottom: 16px;
+}
+
+.header h1 {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.header p {
+  font-size: 13px;
+  color: #888;
+}
+
+/* Statistik */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.stat-card {
+  padding: 16px;
+  border-radius: 16px;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.06);
+}
+
+.stat-card h2 {
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.stat-card span {
+  font-size: 13px;
+  color: #555;
+}
+
+.pink {
+  background: #fde6e6;
+}
+
+.yellow {
+  background: #fff3d6;
+}
+
+/* Card */
 .card {
   background: #fff;
-  border-radius: 12px;
-  padding: 14px;
+  padding: 16px;
+  border-radius: 16px;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.06);
 }
 
-/* Grid statistik (0 & 1) */
-.grid {
+.card h3 {
+  font-size: 15px;
+  margin-bottom: 12px;
+}
+
+/* Expired List */
+.expired {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 10px;
 }
 
-/* Box statistik */
-.grid > div {
-  padding: 14px;
-  border-radius: 12px;
-}
-
-/* Warna box */
-.grid > div:nth-child(1) {
-  background: #fde9e3;
-}
-.grid > div:nth-child(2) {
-  background: #fff1cc;
-}
-
-/* Daftar expired */
-.expired-list {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-  margin-top: 12px;
-}
-
-.expired-item {
-  background: #f2f2f2;
+.item {
+  background: #f1f1f1;
   padding: 12px;
-  border-radius: 10px;
-  font-size: 14px;
+  border-radius: 12px;
+  font-size: 13px;
+  text-align: center;
 }
 
 /* Footer */
 footer {
   text-align: center;
-  font-size: 12px;
-  margin-top: 20px;
-  color: #c9a86a;
+  font-size: 11px;
+  color: #c7a15b;
+  margin: 24px 0 8px;
 }
 
-/* === RESPONSIVE HP === */
-@media (max-width: 480px) {
-  .grid {
-    grid-template-columns: 1fr;
-  }
-
-  .expired-list {
-    grid-template-columns: 1fr;
-  }
-
+/* Tablet / Desktop */
+@media (min-width: 768px) {
   #app {
-    padding: 10px;
+    max-width: 720px;
+  }
+
+  .expired {
+    grid-template-columns: repeat(4, 1fr);
   }
 }

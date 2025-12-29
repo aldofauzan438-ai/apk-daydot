@@ -1,51 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard</title>
-<link rel="stylesheet" href="style.css">
-<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
 <div id="app">
-  <header class="top">
-    <h2>Aplikasi Daydot Tomoro Coffee</h2>
+
+  <header class="header">
+    <h1>Aplikasi Daydot</h1>
+    <p>Tomoro Coffee</p>
   </header>
 
- <section class="card">
-  <div class="grid">
-    <div>
+  <!-- Statistik -->
+  <section class="stats">
+    <div class="stat-card pink">
       <h2>0</h2>
-      <p>Buat Baru</p>
+      <span>Buat Baru</span>
     </div>
-    <div>
+    <div class="stat-card yellow">
       <h2>1</h2>
-      <p>Template yang sudah dibuat</p>
+      <span>Template Dibuat</span>
     </div>
-  </div>
+  </section>
 
-  <h3 style="margin-top:15px">Daftar Expired Item</h3>
+  <!-- Expired -->
+  <section class="card">
+    <h3>Daftar Expired Item</h3>
 
-  <div class="expired-list">
-    <div class="expired-item">Food</div>
-    <div class="expired-item">Syrup</div>
-    <div class="expired-item">Powder</div>
-    <div class="expired-item">Beans</div>
-    <div class="expired-item">Inv Adjustment</div>
-    <div class="expired-item">Return Order</div>
-    <div class="expired-item">HQ Order</div>
-    <div class="expired-item">Records</div>
-  </div>
-</section>
-
+    <div class="expired">
+      <div class="item">Food</div>
+      <div class="item">Syrup</div>
+      <div class="item">Powder</div>
+      <div class="item">Beans</div>
+      <div class="item">Inv Adjustment</div>
+      <div class="item">Return Order</div>
+      <div class="item">HQ Order</div>
+      <div class="item">Records</div>
+    </div>
+  </section>
 
   <footer>
-    <div class="active">By : Aldo Fauzan Adhim </div>
-    
+    By : Aldo Fauzan
   </footer>
+
 </div>
 
-<script src="app.js"></script>
 </body>
 </html>
