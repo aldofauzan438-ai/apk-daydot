@@ -4,8 +4,8 @@ createApp({
   data() {
     return {
       templates: [
-        "Template Harian TJ HI",
-        "Template Mingguan",
+        "Daydot Perhari",
+        "Template Perminggu",
         "Template Harian All Syrup & Food"
     
       ],
