@@ -33,8 +33,8 @@
   <section>
     <h3>Template Dibuat</h3>
     <div class="grid">
-      <div class="item" v-for="(t,i) in templates" :key="i">
-        {{ t }}
+      <div class="item" v-for="(t,i) in templates" :key="t.id">
+        {{ t.name }}
         <div class="actions">
           <button @click.stop="editTemplate(i)">✏️</button>
           <button @click.stop="deleteTemplate(i)">🗑️</button>
@@ -47,8 +47,8 @@
   <section>
     <h3>Daftar Expired Item</h3>
     <div class="grid">
-      <div class="item" v-for="(e,i) in expired" :key="i">
-        {{ e }}
+      <div class="item" v-for="(e,i) in expired" :key="e.id">
+        {{ e.name }}
         <div class="actions">
           <button @click.stop="editExpired(i)">✏️</button>
           <button @click.stop="deleteExpired(i)">🗑️</button>
