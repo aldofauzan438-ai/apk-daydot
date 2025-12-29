@@ -3,73 +3,83 @@ const { createApp } = Vue;
 createApp({
   data() {
     return {
-      templates: JSON.parse(localStorage.getItem('templates')) || [],
-      expired: JSON.parse(localStorage.getItem('expired')) || [],
       newTemplate: "",
-      newExpired: ""
+      newExpired: "",
+
+      templates: JSON.parse(localStorage.getItem("templates")) || [],
+      expired: JSON.parse(localStorage.getItem("expired")) || [],
     };
   },
 
-  watch: {
-    templates: {
-      handler(val) {
-        localStorage.setItem('templates', JSON.stringify(val));
-      },
-      deep: true
-    },
-    expired: {
-      handler(val) {
-        localStorage.setItem('expired', JSON.stringify(val));
-      },
-      deep: true
-    }
-  },
-
   methods: {
+    /* ================= NAVIGASI ================= */
     go(page) {
       window.location.href = page;
     },
 
-    // ===== TEMPLATE =====
+    /* ================= TEMPLATE ================= */
     addTemplate() {
       if (!this.newTemplate.trim()) return;
+
       this.templates.push({
         id: Date.now(),
-        name: this.newTemplate
+        name: this.newTemplate,
       });
+
       this.newTemplate = "";
+      this.save();
     },
 
-    editTemplate(i) {
-      const name = prompt("Edit nama template", this.templates[i].name);
-      if (name) this.templates[i].name = name;
-    },
-
-    deleteTemplate(i) {
-      if (confirm("Hapus template?")) {
-        this.templates.splice(i, 1);
+    editTemplate(index) {
+      const name = prompt("Edit nama template", this.templates[index].name);
+      if (name) {
+        this.templates[index].name = name;
+        this.save();
       }
     },
 
-    // ===== EXPIRED =====
+    deleteTemplate(index) {
+      if (confirm("Hapus template ini?")) {
+        this.templates.splice(index, 1);
+        this.save();
+      }
+    },
+
+    /* ================= EXPIRED ================= */
     addExpired() {
       if (!this.newExpired.trim()) return;
+
       this.expired.push({
         id: Date.now(),
-        name: this.newExpired
+        name: this.newExpired,
       });
+
       this.newExpired = "";
+      this.save();
     },
 
-    editExpired(i) {
-      const name = prompt("Edit nama expired item", this.expired[i].name);
-      if (name) this.expired[i].name = name;
-    },
-
-    deleteExpired(i) {
-      if (confirm("Hapus expired item?")) {
-        this.expired.splice(i, 1);
+    editExpired(index) {
+      const name = prompt(
+        "Edit nama expired item",
+        this.expired[index].name
+      );
+      if (name) {
+        this.expired[index].name = name;
+        this.save();
       }
-    }
-  }
+    },
+
+    deleteExpired(index) {
+      if (confirm("Hapus item ini?")) {
+        this.expired.splice(index, 1);
+        this.save();
+      }
+    },
+
+    /* ================= STORAGE ================= */
+    save() {
+      localStorage.setItem("templates", JSON.stringify(this.templates));
+      localStorage.setItem("expired", JSON.stringify(this.expired));
+    },
+  },
 }).mount("#app");
