@@ -83,6 +83,40 @@ h3 {
   margin-left: 6px;
 }
 
+.form-card {
+  background: white;
+  padding: 16px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+.form-card input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+  margin-bottom: 12px;
+  font-size: 16px;
+}
+
+.form-card button {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  background: #4f8df7;
+  color: white;
+  font-size: 16px;
+}
+
+.back {
+  display: block;
+  margin-top: 16px;
+  color: #666;
+  text-decoration: none;
+}
+
+
 /* FOOTER */
 footer {
   text-align: center;

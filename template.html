@@ -3,18 +3,34 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Template</title>
+  <title>Buat Template</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="container">
-  <h2>Halaman Template</h2>
+  <h2 class="title">Buat Template Baru</h2>
 
-  <p>Ini halaman detail template.</p>
+  <div class="form-card">
+    <input id="templateName" placeholder="Nama Template..." />
+    <button onclick="saveTemplate()">Simpan</button>
+  </div>
 
-  <button onclick="history.back()">⬅️ Kembali</button>
+  <a href="index.html" class="back">← Kembali</a>
 </div>
+
+<script>
+function saveTemplate() {
+  const input = document.getElementById("templateName");
+  if (!input.value) return alert("Nama template wajib diisi");
+
+  const templates = JSON.parse(localStorage.getItem("templates")) || [];
+  templates.push({ id: Date.now(), name: input.value });
+
+  localStorage.setItem("templates", JSON.stringify(templates));
+  window.location.href = "index.html";
+}
+</script>
 
 </body>
 </html>
