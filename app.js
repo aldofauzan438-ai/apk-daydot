@@ -5,8 +5,8 @@ createApp({
     return {
       templates: [
         "Daydot Perhari",
-        "Template Perminggu",
-        "Template Harian All Syrup & Food"
+        "Daydot Perminggu",
+        "Daydot Harian All Syrup & Food"
     
       ],
       expiredItems: [
