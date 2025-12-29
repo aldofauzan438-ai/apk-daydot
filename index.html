@@ -34,18 +34,25 @@
     </div>
 
     <!-- INFO -->
-    <div class="info">
-      <h1>1</h1>
-      <p>Template Dibuat</p>
-    </div>
+    <section class="stat-section">
+  <div class="stat-number">1</div>
+  <div class="stat-label">Template Dibuat</div>
+</section>
 
     <!-- LIST -->
-    <div class="list">
-      <h3>Daftar Expired Item</h3>
-      <ul>
-        <li v-for="item in items" :key="item">{{ item }}</li>
-      </ul>
+    <section class="expired-section">
+    <h3>Daftar Expired Item</h3>
+
+    <div class="expired-grid">
+      <div
+        class="expired-item"
+        v-for="item in expiredItems"
+        :key="item"
+      >
+        {{ item }}
+      </div>
     </div>
+  </section>
 
     <footer>By : Aldo Fauzan</footer>
   </div>

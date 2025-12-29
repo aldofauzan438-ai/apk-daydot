@@ -1,6 +1,4 @@
-const { createApp } = Vue;
-
-createApp({
+const app = Vue.createApp({
   data() {
     return {
       items: [

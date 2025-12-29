@@ -1,73 +1,68 @@
-* {
-  box-sizing: border-box;
-  font-family: system-ui, sans-serif;
-}
-
+/* ===== GLOBAL ===== */
 body {
   margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   background: #f6fbfa;
+  color: #111;
 }
 
-.container {
-  max-width: 420px;
-  margin: auto;
-  padding: 16px;
+section {
+  margin: 20px;
 }
 
-.title {
-  margin-bottom: 16px;
+/* ===== TEMPLATE DIBUAT ===== */
+.stat-section {
+  margin-top: 32px;
 }
 
-.card {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 18px;
-  border-radius: 16px;
-  margin-bottom: 12px;
-  cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+.stat-number {
+  font-size: 40px;
+  font-weight: 700;
+  margin-bottom: 6px;
 }
 
-.card:active {
-  transform: scale(0.97);
+.stat-label {
+  font-size: 16px;
+  color: #555;
 }
 
-.pink {
-  background: #ffeaea;
+/* ===== DAFTAR EXPIRED ITEM ===== */
+.expired-section {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 20px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
 }
 
-.yellow {
-  background: #fff3cc;
+.expired-section h3 {
+  margin: 0 0 16px;
+  font-size: 18px;
 }
 
-.plus {
-  border: none;
-  background: white;
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  font-size: 22px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+/* GRID */
+.expired-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
 }
 
-.info {
-  margin: 20px 0;
-}
-
-.list {
-  background: white;
-  padding: 16px;
-  border-radius: 16px;
-}
-
-.list ul {
-  padding-left: 18px;
-}
-
-footer {
+/* ITEM */
+.expired-item {
+  background: #f2f2f2;
+  padding: 14px;
+  border-radius: 14px;
   text-align: center;
-  font-size: 12px;
-  color: #aaa;
-  margin-top: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+/* Hover & tap effect */
+.expired-item:hover {
+  background: #e8e8e8;
+  transform: translateY(-2px);
+}
+
+.expired-item:active {
+  transform: scale(0.96);
 }
