@@ -1,4 +1,6 @@
-const app = Vue.createApp({
+const { createApp } = Vue;
+
+createApp({
   data() {
     return {
       expiredItems: [
@@ -6,9 +8,12 @@ const app = Vue.createApp({
         "Syrup",
         "Powder",
         "Beans",
-        
+        "Inv Adjustment",
+        "Return Order",
+        "HQ Order",
+        "Records"
       ]
-    }
+    };
   },
   methods: {
     goTemplate() {

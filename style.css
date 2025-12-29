@@ -1,68 +1,106 @@
-/* ===== GLOBAL ===== */
+* {
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  background: #f6fbfa;
-  color: #111;
+  background: #f4f8f7;
 }
 
-section {
-  margin: 20px;
+.container {
+  max-width: 420px;
+  margin: auto;
+  padding: 16px;
 }
 
-/* ===== TEMPLATE DIBUAT ===== */
+.title {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+/* CARD */
+.card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-radius: 18px;
+  margin-bottom: 14px;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.card:hover {
+  transform: scale(0.98);
+}
+
+.card:active {
+  transform: scale(0.96);
+}
+
+.pink {
+  background: #fde8e8;
+}
+
+.yellow {
+  background: #fff1c9;
+}
+
+/* PLUS BUTTON */
+.plus {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: white;
+  font-size: 24px;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* STAT */
 .stat-section {
-  margin-top: 32px;
+  margin: 20px 0;
 }
 
 .stat-number {
-  font-size: 40px;
-  font-weight: 700;
-  margin-bottom: 6px;
+  font-size: 36px;
+  font-weight: bold;
 }
 
 .stat-label {
-  font-size: 16px;
-  color: #555;
+  color: #666;
 }
 
-/* ===== DAFTAR EXPIRED ITEM ===== */
+/* EXPIRED */
 .expired-section {
-  background: #ffffff;
+  background: white;
+  padding: 16px;
   border-radius: 18px;
-  padding: 20px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.05);
 }
 
-.expired-section h3 {
-  margin: 0 0 16px;
-  font-size: 18px;
-}
-
-/* GRID */
 .expired-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 12px;
 }
 
-/* ITEM */
 .expired-item {
-  background: #f2f2f2;
-  padding: 14px;
-  border-radius: 14px;
+  background: #f1f1f1;
+  padding: 12px;
+  border-radius: 12px;
   text-align: center;
   font-size: 14px;
-  font-weight: 500;
-  transition: all 0.2s ease;
 }
 
-/* Hover & tap effect */
-.expired-item:hover {
-  background: #e8e8e8;
-  transform: translateY(-2px);
-}
-
-.expired-item:active {
-  transform: scale(0.96);
+/* FOOTER */
+footer {
+  text-align: center;
+  margin: 20px 0;
+  font-size: 13px;
+  color: #999;
 }
