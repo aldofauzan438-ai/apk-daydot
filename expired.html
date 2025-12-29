@@ -1,14 +1,39 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Buat daftar Expired Baru</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Expired Item</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 </head>
 <body>
-    <h1>Buat Baru Daftar Expired Item</h1>
-<a href="index.html">← Kembali</a>
 
-    
+<div id="app" class="container">
+  <h2>Tambah Expired Item</h2>
+
+  <input v-model="name" placeholder="Nama Item">
+  <button @click="save">Simpan</button>
+
+  <br><br>
+  <a href="index.html">← Kembali</a>
+</div>
+
+<script>
+Vue.createApp({
+  data() {
+    return { name: '' }
+  },
+  methods: {
+    save() {
+      if(!this.name) return alert('Isi nama item')
+      const data = JSON.parse(localStorage.getItem('expired')) || []
+      data.push(this.name)
+      localStorage.setItem('expired', JSON.stringify(data))
+      location.href = 'index.html'
+    }
+  }
+}).mount('#app')
+</script>
 </body>
 </html>

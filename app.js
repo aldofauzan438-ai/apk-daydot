@@ -1,67 +1,43 @@
-const { createApp } = Vue;
-
-createApp({
+Vue.createApp({
   data() {
     return {
-      templates: JSON.parse(localStorage.getItem('templates')) || [
-        'Daydot Perhari',
-        'Template Perminggu',
-        'Template Harian All Syrup & Food'
-      ],
-      expiredItems: JSON.parse(localStorage.getItem('expired')) || [
-        'Food','Syrup','Powder','Beans'
-      ]
+      templates: JSON.parse(localStorage.getItem('templates')) || [],
+      expired: JSON.parse(localStorage.getItem('expired')) || []
     }
   },
-
   methods: {
-    save() {
-      localStorage.setItem('templates', JSON.stringify(this.templates));
-      localStorage.setItem('expired', JSON.stringify(this.expiredItems));
+    go(page) {
+      location.href = page
     },
 
-    /* NAVIGASI */
-    goTemplate() {
-      location.href = 'template.html';
-    },
-    goExpired() {
-      location.href = 'expired.html';
-    },
-    openTemplate(name) {
-      alert('Buka template: ' + name);
-    },
-    openExpired(name) {
-      alert('Buka expired: ' + name);
-    },
-
-    /* EDIT & DELETE TEMPLATE */
     editTemplate(i) {
-      const val = prompt('Edit nama template', this.templates[i]);
-      if (val) {
-        this.templates[i] = val;
-        this.save();
+      const name = prompt('Edit Template', this.templates[i])
+      if (name) {
+        this.templates[i] = name
+        localStorage.setItem('templates', JSON.stringify(this.templates))
       }
     },
+
     deleteTemplate(i) {
       if (confirm('Hapus template?')) {
-        this.templates.splice(i,1);
-        this.save();
+        this.templates.splice(i,1)
+        localStorage.setItem('templates', JSON.stringify(this.templates))
       }
     },
 
-    /* EDIT & DELETE EXPIRED */
     editExpired(i) {
-      const val = prompt('Edit nama expired item', this.expiredItems[i]);
-      if (val) {
-        this.expiredItems[i] = val;
-        this.save();
+      const name = prompt('Edit Item', this.expired[i])
+      if (name) {
+        this.expired[i] = name
+        localStorage.setItem('expired', JSON.stringify(this.expired))
       }
     },
+
     deleteExpired(i) {
       if (confirm('Hapus item?')) {
-        this.expiredItems.splice(i,1);
-        this.save();
+        this.expired.splice(i,1)
+        localStorage.setItem('expired', JSON.stringify(this.expired))
       }
     }
   }
-}).mount('#app');
+}).mount('#app')

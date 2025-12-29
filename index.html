@@ -1,61 +1,63 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Daydot Dashboard</title>
-
   <link rel="stylesheet" href="style.css">
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 </head>
 <body>
-
 <div id="app" class="container">
 
   <h2 class="title">Tomoro Coffee</h2>
 
   <!-- BUAT BARU -->
-  <div class="card pink" @click="goTemplate">
+  <div class="card pink" @click="go('template.html')">
     <div>
       <h3>Buat Baru</h3>
       <p>Template</p>
     </div>
-    <button class="plus">+</button>
+    <span class="plus">+</span>
   </div>
 
-  <div class="card yellow" @click="goExpired">
+  <div class="card yellow" @click="go('expired.html')">
     <div>
       <h3>Buat Baru</h3>
       <p>Daftar Expired Item</p>
     </div>
-    <button class="plus">+</button>
+    <span class="plus">+</span>
   </div>
 
-  <!-- TEMPLATE DIBUAT -->
-  <h3 class="section-title">Template Dibuat</h3>
-  <div class="grid">
-    <div class="item-card" v-for="(t,i) in templates" :key="i">
-      <span @click="openTemplate(t)">{{ t }}</span>
-      <div class="actions">
-        <button @click.stop="editTemplate(i)">✏️</button>
-        <button @click.stop="deleteTemplate(i)">🗑️</button>
+  <!-- TEMPLATE -->
+  <section>
+    <h3>Template Dibuat</h3>
+    <div class="grid">
+      <div class="item" v-for="(t,i) in templates" :key="i">
+        {{ t }}
+        <div class="actions">
+          <button @click.stop="editTemplate(i)">✏️</button>
+          <button @click.stop="deleteTemplate(i)">🗑️</button>
+        </div>
       </div>
     </div>
-  </div>
+  </section>
 
   <!-- EXPIRED -->
-  <h3 class="section-title">Daftar Expired Item</h3>
-  <div class="grid">
-    <div class="item-card" v-for="(e,i) in expiredItems" :key="i">
-      <span @click="openExpired(e)">{{ e }}</span>
-      <div class="actions">
-        <button @click.stop="editExpired(i)">✏️</button>
-        <button @click.stop="deleteExpired(i)">🗑️</button>
+  <section>
+    <h3>Daftar Expired Item</h3>
+    <div class="grid">
+      <div class="item" v-for="(e,i) in expired" :key="i">
+        {{ e }}
+        <div class="actions">
+          <button @click.stop="editExpired(i)">✏️</button>
+          <button @click.stop="deleteExpired(i)">🗑️</button>
+        </div>
       </div>
     </div>
-  </div>
+  </section>
 
-  <footer>By : Aldo Fauzan</footer>
+  <footer>By : Aldo Fauzan Adhim</footer>
 </div>
 
 <script src="app.js"></script>
