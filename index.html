@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Daydot Dashboard</title>
-
   <link rel="stylesheet" href="style.css">
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 </head>
@@ -12,6 +11,23 @@
 
 <div id="app" class="container">
   <h2 class="title">Tomoro Coffee</h2>
+
+  <!-- BUAT BARU -->
+  <div class="card pink" @click="go('template.html')">
+    <div>
+      <h3>Buat Baru</h3>
+      <p>Template</p>
+    </div>
+    <span class="plus">+</span>
+  </div>
+
+  <div class="card yellow" @click="go('expired.html')">
+    <div>
+      <h3>Buat Baru</h3>
+      <p>Daftar Expired Item</p>
+    </div>
+    <span class="plus">+</span>
+  </div>
 
   <!-- TEMPLATE -->
   <section>
@@ -23,14 +39,17 @@
     </div>
 
     <div class="grid">
-      <div class="item" v-for="(t,i) in templates" :key="t.id">
+      <div class="item clickable"
+           v-for="(t,i) in templates"
+           :key="t.id"
+           @click="openTemplate(t.id)">
         <span>{{ t.name }}</span>
         <div class="actions">
           <svg class="icon" @click.stop="editTemplate(i)" viewBox="0 0 24 24">
             <path d="M3 17.25V21h3.75L17.8 9.94l-3.75-3.75L3 17.25z"/>
           </svg>
           <svg class="icon delete" @click.stop="deleteTemplate(i)" viewBox="0 0 24 24">
-            <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12z"/>
+            <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6z"/>
           </svg>
         </div>
       </div>
@@ -38,34 +57,31 @@
   </section>
 
   <!-- EXPIRED -->
-  <div class="input-box">
-  <input
-    v-model="newExpired"
-    placeholder="Nama expired item"
-  />
-  <button @click="addExpired">Tambah</button>
-</div>
+  <section>
+    <h3>Daftar Expired Item</h3>
 
+    <div class="input-box">
+      <input v-model="newExpired" placeholder="Nama expired item">
+      <button @click="addExpired">Tambah</button>
+    </div>
 
- <div
-  class="item clickable"
-  v-for="(e,i) in expired"
-  :key="e.id"
-  @click="goExpiredDetail(e.id)"
->
-  <span>{{ e.name }}</span>
-
-  <div class="actions">
-    <svg class="icon" @click.stop="editExpired(i)" viewBox="0 0 24 24">
-      <path d="M3 17.25V21h3.75L17.8 9.94l-3.75-3.75L3 17.25z"/>
-    </svg>
-
-    <svg class="icon delete" @click.stop="deleteExpired(i)" viewBox="0 0 24 24">
-      <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12z"/>
-    </svg>
-  </div>
-</div>
-
+    <div class="grid">
+      <div class="item clickable"
+           v-for="(e,i) in expired"
+           :key="e.id"
+           @click="openExpired(e.id)">
+        <span>{{ e.name }}</span>
+        <div class="actions">
+          <svg class="icon" @click.stop="editExpired(i)" viewBox="0 0 24 24">
+            <path d="M3 17.25V21h3.75L17.8 9.94l-3.75-3.75L3 17.25z"/>
+          </svg>
+          <svg class="icon delete" @click.stop="deleteExpired(i)" viewBox="0 0 24 24">
+            <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6z"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <footer>By : Aldo Fauzan Adhim</footer>
 </div>

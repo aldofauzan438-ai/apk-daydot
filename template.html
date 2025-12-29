@@ -1,36 +1,17 @@
 <!DOCTYPE html>
-<html lang="id">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Buat Template</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <title>Detail</title>
 </head>
 <body>
-
-<div class="container">
-  <h2 class="title">Buat Template Baru</h2>
-
-  <div class="form-card">
-    <input id="templateName" placeholder="Nama Template..." />
-    <button onclick="saveTemplate()">Simpan</button>
-  </div>
-
-  <a href="index.html" class="back">← Kembali</a>
-</div>
+<h2>Halaman Detail</h2>
+<p>ID: <span id="id"></span></p>
+<a href="index.html">⬅ Kembali</a>
 
 <script>
-function saveTemplate() {
-  const input = document.getElementById("templateName");
-  if (!input.value) return alert("Nama template wajib diisi");
-
-  const templates = JSON.parse(localStorage.getItem("templates")) || [];
-  templates.push({ id: Date.now(), name: input.value });
-
-  localStorage.setItem("templates", JSON.stringify(templates));
-  window.location.href = "index.html";
-}
+  const params = new URLSearchParams(location.search);
+  document.getElementById('id').innerText = params.get('id');
 </script>
-
 </body>
 </html>

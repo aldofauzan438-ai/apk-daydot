@@ -1,41 +1,17 @@
 <!DOCTYPE html>
-<html lang="id">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Expired Detail</title>
-
-  <link rel="stylesheet" href="style.css">
-  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <meta charset="UTF-8">
+  <title>Detail</title>
 </head>
 <body>
+<h2>Halaman Detail</h2>
+<p>ID: <span id="id"></span></p>
+<a href="index.html">⬅ Kembali</a>
 
-<div id="expiredApp" class="container">
-
-  <h3>{{ category }}</h3>
-
-  <div class="form-card">
-    <input v-model="itemName" placeholder="Nama Item">
-
-    <p>Expired:</p>
-    <label v-for="o in options" :key="o.label">
-      <input type="radio" v-model="selected" :value="o.label">
-      {{ o.label }}
-    </label>
-
-    <button @click="addItem">Tambah</button>
-  </div>
-
-  <section>
-    <h4>Daftar Item</h4>
-    <div class="item" v-for="(i,index) in items" :key="index">
-      {{ i.name }} — <small>{{ i.expired }}</small>
-    </div>
-  </section>
-
-  <a href="index.html" class="back">← Kembali</a>
-</div>
-
-<script src="app.js"></script>
+<script>
+  const params = new URLSearchParams(location.search);
+  document.getElementById('id').innerText = params.get('id');
+</script>
 </body>
 </html>
