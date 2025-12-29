@@ -1,39 +1,20 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Template</title>
   <link rel="stylesheet" href="style.css">
-  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 </head>
 <body>
 
-<div id="app" class="container">
-  <h2>Tambah Template</h2>
+<div class="container">
+  <h2>Halaman Template</h2>
 
-  <input v-model="name" placeholder="Nama Template">
-  <button @click="save">Simpan</button>
+  <p>Ini halaman detail template.</p>
 
-  <br><br>
-  <a href="index.html">← Kembali</a>
+  <button onclick="history.back()">⬅️ Kembali</button>
 </div>
 
-<script>
-Vue.createApp({
-  data() {
-    return { name: '' }
-  },
-  methods: {
-    save() {
-      if(!this.name) return alert('Isi nama template')
-      const data = JSON.parse(localStorage.getItem('templates')) || []
-      data.push(this.name)
-      localStorage.setItem('templates', JSON.stringify(data))
-      location.href = 'index.html'
-    }
-  }
-}).mount('#app')
-</script>
 </body>
 </html>
