@@ -116,6 +116,43 @@ h3 {
   text-decoration: none;
 }
 
+.input-box {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.input-box input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+}
+
+.input-box button {
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: none;
+  background: #ff6b9d;
+  color: white;
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+  fill: #555;
+  cursor: pointer;
+}
+
+.icon.delete {
+  fill: #e74c3c;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
 
 /* FOOTER */
 footer {

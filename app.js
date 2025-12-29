@@ -3,62 +3,73 @@ const { createApp } = Vue;
 createApp({
   data() {
     return {
-      templates: JSON.parse(localStorage.getItem("templates")) || [
-        { id: Date.now(), name: "Daydot Perhari" },
-        { id: Date.now() + 1, name: "Template Perminggu" },
-      ],
-      expired: JSON.parse(localStorage.getItem("expired")) || [
-        { id: Date.now() + 2, name: "Food" },
-        { id: Date.now() + 3, name: "Syrup" },
-        { id: Date.now() + 4, name: "Powder" },
-        { id: Date.now() + 5, name: "Beans" },
-      ],
+      templates: JSON.parse(localStorage.getItem('templates')) || [],
+      expired: JSON.parse(localStorage.getItem('expired')) || [],
+      newTemplate: "",
+      newExpired: ""
     };
   },
 
-  methods: {
-    go(url) {
-      window.location.href = url;
+  watch: {
+    templates: {
+      handler(val) {
+        localStorage.setItem('templates', JSON.stringify(val));
+      },
+      deep: true
     },
-
-    /* ========= TEMPLATE ========= */
-    editTemplate(index) {
-      const newName = prompt("Edit nama template:", this.templates[index].name);
-      if (newName) {
-        this.templates[index].name = newName;
-        this.save();
-      }
-    },
-
-    deleteTemplate(index) {
-      if (confirm("Hapus template ini?")) {
-        this.templates.splice(index, 1);
-        this.save();
-      }
-    },
-
-    /* ========= EXPIRED ========= */
-    editExpired(index) {
-      const newName = prompt(
-        "Edit nama expired item:",
-        this.expired[index].name
-      );
-      if (newName) {
-        this.expired[index].name = newName;
-        this.save();
-      }
-    },
-
-    deleteExpired(index) {
-      if (confirm("Hapus expired item ini?")) {
-        this.expired.splice(index, 1);
-        this.save();
-      }
-    },
-
-    save() {
-      localStorage.setItem("templates", JSON.stringify(this.templates));
-      localStorage.setItem("expired", JSON.stringify(this.expired));
-    },
+    expired: {
+      handler(val) {
+        localStorage.setItem('expired', JSON.stringify(val));
+      },
+      deep: true
+    }
   },
+
+  methods: {
+    go(page) {
+      window.location.href = page;
+    },
+
+    // ===== TEMPLATE =====
+    addTemplate() {
+      if (!this.newTemplate.trim()) return;
+      this.templates.push({
+        id: Date.now(),
+        name: this.newTemplate
+      });
+      this.newTemplate = "";
+    },
+
+    editTemplate(i) {
+      const name = prompt("Edit nama template", this.templates[i].name);
+      if (name) this.templates[i].name = name;
+    },
+
+    deleteTemplate(i) {
+      if (confirm("Hapus template?")) {
+        this.templates.splice(i, 1);
+      }
+    },
+
+    // ===== EXPIRED =====
+    addExpired() {
+      if (!this.newExpired.trim()) return;
+      this.expired.push({
+        id: Date.now(),
+        name: this.newExpired
+      });
+      this.newExpired = "";
+    },
+
+    editExpired(i) {
+      const name = prompt("Edit nama expired item", this.expired[i].name);
+      if (name) this.expired[i].name = name;
+    },
+
+    deleteExpired(i) {
+      if (confirm("Hapus expired item?")) {
+        this.expired.splice(i, 1);
+      }
+    }
+  }
 }).mount("#app");

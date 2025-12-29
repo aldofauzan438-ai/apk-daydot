@@ -31,17 +31,33 @@
 
   <!-- TEMPLATE -->
   <section>
-    <h3>Template Dibuat</h3>
-    <div class="grid">
-      <div class="item" v-for="(t,i) in templates" :key="t.id">
-        {{ t.name }}
-        <div class="actions">
-          <button @click.stop="editTemplate(i)">✏️</button>
-          <button @click.stop="deleteTemplate(i)">🗑️</button>
-        </div>
+  <h3>Template Dibuat</h3>
+
+  <div class="input-box">
+    <input
+      v-model="newTemplate"
+      placeholder="Nama template baru"
+    />
+    <button @click="addTemplate">Tambah</button>
+  </div>
+
+  <div class="grid">
+    <div class="item" v-for="(t,i) in templates" :key="t.id">
+      <span>{{ t.name }}</span>
+
+      <div class="actions">
+        <svg class="icon" @click.stop="editTemplate(i)" viewBox="0 0 24 24">
+          <path d="M3 17.25V21h3.75L17.8 9.94l-3.75-3.75L3 17.25z"/>
+        </svg>
+
+        <svg class="icon delete" @click.stop="deleteTemplate(i)" viewBox="0 0 24 24">
+          <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12z"/>
+        </svg>
       </div>
     </div>
-  </section>
+  </div>
+</section>
+
 
   <!-- EXPIRED -->
   <section>
