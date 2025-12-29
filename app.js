@@ -38,10 +38,10 @@ if (document.getElementById("app")) {
           localStorage.setItem("templates", JSON.stringify(this.templates));
         }
       },
-      openExpired(e) {
-        localStorage.setItem("activeExpired", e.name);
-        location.href = "expired.html";
-      }
+      goExpiredDetail(id) {
+  window.location.href = `expired-detail.html?id=${id}`
+  }
+  
     }
   }).mount("#app");
 }

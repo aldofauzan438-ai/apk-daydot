@@ -206,6 +206,19 @@ h3 {
   fill: #e74c3c;
 }
 
+.clickable {
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.clickable:active {
+  transform: scale(0.97);
+}
+
+.clickable:hover {
+  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+}
+
 
 /* FOOTER */
 footer {
