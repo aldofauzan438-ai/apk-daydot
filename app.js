@@ -1,14 +1,14 @@
 const app = Vue.createApp({
   data() {
     return {
-      items: [
+      expiredItems: [
         "Food",
         "Syrup",
         "Powder",
         "Beans",
         
       ]
-    };
+    }
   },
   methods: {
     goTemplate() {
