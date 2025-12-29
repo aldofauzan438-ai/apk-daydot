@@ -31,36 +31,46 @@
     </div>
 
     <!-- TEMPLATE DIBUAT -->
-    <section class="section">
-      <h3>Template Dibuat</h3>
+    <section class="expired-section">
+  <h3>Template Dibuat</h3>
 
-      <div class="grid">
-        <div
-          class="item-card"
-          v-for="template in templates"
-          :key="template"
-          @click="openTemplate(template)"
-        >
-          {{ template }}
-        </div>
+  <div class="expired-grid">
+    <div
+      class="expired-item"
+      v-for="item in templates"
+      :key="item.id"
+      @click="goDetail('template', item.name)"
+    >
+      <span>{{ item.name }}</span>
+
+      <div class="actions" @click.stop>
+        ✏️ <span @click="editTemplate(item)">Edit</span>
+        🗑 <span @click="deleteTemplate(item.id)">Hapus</span>
       </div>
-    </section>
+    </div>
+  </div>
+</section>
 
     <!-- EXPIRED ITEM -->
-    <section class="section">
-      <h3>Daftar Expired Item</h3>
+    <section class="expired-section">
+  <h3>Daftar Expired Item</h3>
 
-      <div class="grid">
-        <div
-          class="item-card"
-          v-for="item in expiredItems"
-          :key="item"
-          @click="openExpired(item)"
-        >
-          {{ item }}
-        </div>
+  <div class="expired-grid">
+    <div
+      class="expired-item"
+      v-for="item in expiredItems"
+      :key="item.id"
+      @click="goDetail('expired', item.name)"
+    >
+      <span>{{ item.name }}</span>
+
+      <div class="actions" @click.stop>
+        ✏️ <span @click="editExpired(item)">Edit</span>
+        🗑 <span @click="deleteExpired(item.id)">Hapus</span>
       </div>
-    </section>
+    </div>
+  </div>
+</section>
 
     <footer>By : Aldo Fauzan</footer>
   </div>

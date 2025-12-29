@@ -87,6 +87,28 @@ body {
   transform: scale(0.95);
 }
 
+/* CSS Tambahan untuk expired item dan biar rapih keseluruhan */
+.expired-item {
+  position: relative;
+  padding: 14px;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  font-size: 12px;
+  margin-top: 8px;
+  color: #666;
+}
+
+.actions span {
+  cursor: pointer;
+}
+
+.actions span:hover {
+  color: #000;
+}
+
 /* FOOTER */
 footer {
   text-align: center;
