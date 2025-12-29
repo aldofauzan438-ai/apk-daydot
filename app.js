@@ -8,10 +8,7 @@ createApp({
         "Syrup",
         "Powder",
         "Beans",
-        "Inv Adjustment",
-        "Return Order",
-        "HQ Order",
-        "Records"
+        
       ]
     };
   },
