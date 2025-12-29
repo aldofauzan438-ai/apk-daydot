@@ -3,67 +3,65 @@ const { createApp } = Vue;
 createApp({
   data() {
     return {
-      templates: [],
-      expiredItems: []
-    };
-  },
-
-  mounted() {
-    // load dari localStorage
-    this.templates = JSON.parse(localStorage.getItem("templates")) || [
-      { id: 1, name: "Daydot Perhari" },
-      { id: 2, name: "Template Perminggu" },
-      { id: 3, name: "Template Harian All Syrup & Food" }
-    ];
-
-    this.expiredItems = JSON.parse(localStorage.getItem("expiredItems")) || [
-      { id: 1, name: "Food" },
-      { id: 2, name: "Syrup" },
-      { id: 3, name: "Powder" },
-      { id: 4, name: "Beans" }
-    ];
+      templates: JSON.parse(localStorage.getItem('templates')) || [
+        'Daydot Perhari',
+        'Template Perminggu',
+        'Template Harian All Syrup & Food'
+      ],
+      expiredItems: JSON.parse(localStorage.getItem('expired')) || [
+        'Food','Syrup','Powder','Beans'
+      ]
+    }
   },
 
   methods: {
-    // ===== TEMPLATE =====
-    editTemplate(item) {
-      const newName = prompt("Edit nama template:", item.name);
-      if (newName) {
-        item.name = newName;
-        this.saveTemplates();
-      }
-    },
-    deleteTemplate(id) {
-      if (confirm("Hapus template ini?")) {
-        this.templates = this.templates.filter(t => t.id !== id);
-        this.saveTemplates();
-      }
-    },
-    saveTemplates() {
-      localStorage.setItem("templates", JSON.stringify(this.templates));
+    save() {
+      localStorage.setItem('templates', JSON.stringify(this.templates));
+      localStorage.setItem('expired', JSON.stringify(this.expiredItems));
     },
 
-    // ===== EXPIRED =====
-    editExpired(item) {
-      const newName = prompt("Edit nama expired item:", item.name);
-      if (newName) {
-        item.name = newName;
-        this.saveExpired();
-      }
+    /* NAVIGASI */
+    goTemplate() {
+      location.href = 'template.html';
     },
-    deleteExpired(id) {
-      if (confirm("Hapus item ini?")) {
-        this.expiredItems = this.expiredItems.filter(e => e.id !== id);
-        this.saveExpired();
-      }
+    goExpired() {
+      location.href = 'expired.html';
     },
-    saveExpired() {
-      localStorage.setItem("expiredItems", JSON.stringify(this.expiredItems));
+    openTemplate(name) {
+      alert('Buka template: ' + name);
+    },
+    openExpired(name) {
+      alert('Buka expired: ' + name);
     },
 
-    // ===== NAVIGASI =====
-    goDetail(type, name) {
-      window.location.href = `detail.html?type=${type}&name=${encodeURIComponent(name)}`;
+    /* EDIT & DELETE TEMPLATE */
+    editTemplate(i) {
+      const val = prompt('Edit nama template', this.templates[i]);
+      if (val) {
+        this.templates[i] = val;
+        this.save();
+      }
+    },
+    deleteTemplate(i) {
+      if (confirm('Hapus template?')) {
+        this.templates.splice(i,1);
+        this.save();
+      }
+    },
+
+    /* EDIT & DELETE EXPIRED */
+    editExpired(i) {
+      const val = prompt('Edit nama expired item', this.expiredItems[i]);
+      if (val) {
+        this.expiredItems[i] = val;
+        this.save();
+      }
+    },
+    deleteExpired(i) {
+      if (confirm('Hapus item?')) {
+        this.expiredItems.splice(i,1);
+        this.save();
+      }
     }
   }
-}).mount("#app");
+}).mount('#app');

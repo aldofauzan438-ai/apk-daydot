@@ -1,118 +1,73 @@
-* {
-  box-sizing: border-box;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont;
-}
-
 body {
-  margin: 0;
-  background: #f3faf8;
+  font-family: system-ui, sans-serif;
+  background:#f4faf8;
+  margin:0;
 }
 
 .container {
-  max-width: 420px;
-  margin: auto;
-  padding: 16px;
+  max-width:420px;
+  margin:auto;
+  padding:16px;
 }
 
 .title {
-  font-size: 22px;
-  margin-bottom: 16px;
+  font-size:22px;
+  margin-bottom:16px;
 }
 
-/* CARD BUAT BARU */
 .card {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px;
-  border-radius: 18px;
-  margin-bottom: 14px;
-  cursor: pointer;
-  transition: transform .2s ease, box-shadow .2s ease;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:20px;
+  border-radius:18px;
+  margin-bottom:16px;
+  cursor:pointer;
 }
 
-.card:active {
-  transform: scale(0.97);
-}
-
-.pink {
-  background: #fde8e6;
-}
-
-.yellow {
-  background: #fff3cc;
-}
+.pink { background:#fde8e6; }
+.yellow { background:#fff3c6; }
 
 .plus {
-  border: none;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  font-size: 26px;
-  background: white;
-  box-shadow: 0 4px 12px rgba(0,0,0,.12);
+  border:none;
+  width:44px;
+  height:44px;
+  border-radius:50%;
+  font-size:24px;
+  background:white;
+  box-shadow:0 4px 10px rgba(0,0,0,.1);
 }
 
-/* SECTION */
-.section {
-  margin-top: 24px;
+.section-title {
+  margin:20px 0 10px;
 }
 
-.section h3 {
-  margin-bottom: 12px;
-}
-
-/* GRID */
 .grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
 }
 
-/* ITEM CARD */
 .item-card {
-  background: #f2f2f2;
-  padding: 14px;
-  border-radius: 14px;
-  text-align: center;
-  cursor: pointer;
-  transition: transform .2s ease, box-shadow .2s ease;
+  background:#fff;
+  padding:14px;
+  border-radius:14px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
 }
 
-.item-card:hover {
-  box-shadow: 0 6px 16px rgba(0,0,0,.12);
+.actions button {
+  background:none;
+  border:none;
+  font-size:16px;
+  margin-left:6px;
+  cursor:pointer;
 }
 
-.item-card:active {
-  transform: scale(0.95);
-}
-
-/* CSS Tambahan untuk expired item dan biar rapih keseluruhan */
-.expired-item {
-  position: relative;
-  padding: 14px;
-}
-
-.actions {
-  display: flex;
-  gap: 10px;
-  font-size: 12px;
-  margin-top: 8px;
-  color: #666;
-}
-
-.actions span {
-  cursor: pointer;
-}
-
-.actions span:hover {
-  color: #000;
-}
-
-/* FOOTER */
 footer {
-  text-align: center;
-  margin: 24px 0;
-  font-size: 13px;
-  color: #b8a16c;
+  text-align:center;
+  margin:30px 0;
+  font-size:13px;
+  color:#999;
 }
