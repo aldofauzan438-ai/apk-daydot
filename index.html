@@ -1,72 +1,42 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard</title>
-
-  <!-- Vue CDN -->
-  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-
-  <!-- Icon -->
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded" rel="stylesheet" />
-
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-
 <div id="app">
+  <div class="header">
+    <h1>Tomoro Coffee</h1>
+  </div>
 
-  <header class="header">
-    <h1>Aplikasi Daydot</h1>
-    <p>Tomoro Coffee</p>
-  </header>
+  <!-- Buat Baru Template -->
+  <div class="card pink" @click="goTemplate">
+    <button class="btn-plus">+</button>
+    <div class="card-title">Buat Baru</div>
+    <div class="card-subtitle">Template</div>
+  </div>
 
-  <!-- Statistik -->
-  <section class="stats">
-     <!-- CARD BUAT BARU -->
-    <div class="grid-2">
-      <div class="card add template" @click="goTo('buat-baru.html')">
-        <span class="icon material-symbols-rounded">add</span>
-        <h2>Buat Baru</h2>
-        <p>Template</p>
-      </div>
+  <!-- Buat Baru Expired -->
+  <div class="card yellow" @click="goExpired">
+    <button class="btn-plus">+</button>
+    <div class="card-title">Buat Baru</div>
+    <div class="card-subtitle">Daftar Expired Item</div>
+  </div>
 
-      <div class="card add expired" @click="goTo('expired.html')">
-        <span class="icon material-symbols-rounded">add</span>
-        <h2>Buat Baru</h2>
-        <p>Daftar Expired Item</p>
-      </div>
+  <!-- Template Dibuat -->
+  <div class="card white">
+    <div class="stat-number">1</div>
+    <div class="card-subtitle">Template Dibuat</div>
+  </div>
+
+  <!-- Daftar Expired -->
+  <div class="card white">
+    <div class="card-title">Daftar Expired Item</div>
+    <div class="expired-list">
+      <div class="expired-item">Food</div>
+      <div class="expired-item">Syrup</div>
+      <div class="expired-item">Powder</div>
+      <div class="expired-item">Beans</div>
+      <div class="expired-item">Inv Adjustment</div>
+      <div class="expired-item">Return Order</div>
+      <div class="expired-item">HQ Order</div>
+      <div class="expired-item">Records</div>
     </div>
+  </div>
 
-    <div class="stat-card yellow clickable" @click="goTo('template.html')">
-      <h2>{{ template }}</h2>
-      <span>Template Dibuat</span>
-    </div>
-  </section>
-
-  <!-- Expired -->
-  <section class="card">
-    <h3>Daftar Expired Item</h3>
-
-    <div class="expired">
-      <div 
-        class="item clickable"
-        v-for="item in expiredItems"
-        :key="item"
-        @click="goTo('detail.html')"
-      >
-        {{ item }}
-      </div>
-    </div>
-  </section>
-
-  <footer>
-    By : Aldo Fauzan
-  </footer>
-
+  <footer>By : Aldo Fauzan</footer>
 </div>
-
-<script src="app.js"></script>
-</body>
-</html>
