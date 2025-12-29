@@ -7,7 +7,6 @@
 
 body {
   background: #f4f5f7;
-  color: #222;
 }
 
 #app {
@@ -17,21 +16,17 @@ body {
 }
 
 /* Header */
-.header {
-  margin-bottom: 16px;
-}
-
 .header h1 {
   font-size: 18px;
   font-weight: 600;
 }
-
 .header p {
   font-size: 13px;
   color: #888;
+  margin-bottom: 16px;
 }
 
-/* Statistik */
+/* Stats */
 .stats {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -41,13 +36,15 @@ body {
 
 .stat-card {
   padding: 16px;
-  border-radius: 16px;
-  box-shadow: 0 6px 14px rgba(0,0,0,0.06);
+  border-radius: 18px;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+  position: relative;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .stat-card h2 {
   font-size: 26px;
-  font-weight: 700;
+  margin-top: 6px;
 }
 
 .stat-card span {
@@ -55,20 +52,30 @@ body {
   color: #555;
 }
 
-.pink {
-  background: #fde6e6;
+.icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.yellow {
-  background: #fff3d6;
+.material-symbols-rounded {
+  font-size: 22px;
 }
+
+/* Colors */
+.pink { background: #fde6e6; }
+.yellow { background: #fff3d6; }
 
 /* Card */
 .card {
   background: #fff;
   padding: 16px;
-  border-radius: 16px;
-  box-shadow: 0 8px 18px rgba(0,0,0,0.06);
+  border-radius: 18px;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.08);
 }
 
 .card h3 {
@@ -76,7 +83,7 @@ body {
   margin-bottom: 12px;
 }
 
-/* Expired List */
+/* Expired */
 .expired {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -86,9 +93,23 @@ body {
 .item {
   background: #f1f1f1;
   padding: 12px;
-  border-radius: 12px;
-  font-size: 13px;
+  border-radius: 14px;
   text-align: center;
+  font-size: 13px;
+}
+
+/* Clickable Animation */
+.clickable {
+  cursor: pointer;
+}
+
+.clickable:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(0,0,0,0.12);
+}
+
+.clickable:active {
+  transform: scale(0.96);
 }
 
 /* Footer */
@@ -97,15 +118,4 @@ footer {
   font-size: 11px;
   color: #c7a15b;
   margin: 24px 0 8px;
-}
-
-/* Tablet / Desktop */
-@media (min-width: 768px) {
-  #app {
-    max-width: 720px;
-  }
-
-  .expired {
-    grid-template-columns: repeat(4, 1fr);
-  }
 }
