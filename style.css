@@ -153,6 +153,59 @@ h3 {
   gap: 10px;
 }
 
+/* TEMPLATE SECTION */
+.template-section {
+  background: linear-gradient(180deg, #ffffff, #f6fbff);
+  padding: 16px;
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+}
+
+/* INPUT */
+.input-box.fancy input {
+  background: #fff;
+  border: 1px solid #e3eaf0;
+}
+
+.input-box.fancy button {
+  background: linear-gradient(135deg, #ff7eb3, #ff758c);
+  font-weight: 600;
+}
+
+/* TEMPLATE ITEM */
+.template-item {
+  background: linear-gradient(135deg, #f0f7ff, #ffffff);
+  border-radius: 16px;
+  padding: 14px 16px;
+  transition: all 0.2s ease;
+}
+
+.template-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+}
+
+.item-name {
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+}
+
+/* ICON */
+.icon {
+  width: 18px;
+  height: 18px;
+  fill: #666;
+}
+
+.icon:hover {
+  fill: #000;
+}
+
+.icon.delete:hover {
+  fill: #e74c3c;
+}
+
 
 /* FOOTER */
 footer {

@@ -12,46 +12,36 @@
 
   <h2 class="title">Tomoro Coffee</h2>
 
-  <!-- BUAT BARU -->
-  <div class="card pink" @click="go('template.html')">
-    <div>
-      <h3>Buat Baru</h3>
-      <p>Template</p>
-    </div>
-    <span class="plus">+</span>
-  </div>
-
-  <div class="card yellow" @click="go('expired.html')">
-    <div>
-      <h3>Buat Baru</h3>
-      <p>Daftar Expired Item</p>
-    </div>
-    <span class="plus">+</span>
-  </div>
-
   <!-- TEMPLATE -->
-  <section>
-  <h3>Template Dibuat</h3>
+  <section class="template-section">
+  <h3>📄 Template Dibuat</h3>
 
-  <div class="input-box">
+  <div class="input-box fancy">
     <input
       v-model="newTemplate"
-      placeholder="Nama template baru"
+      placeholder="Masukkan nama template..."
     />
-    <button @click="addTemplate">Tambah</button>
+    <button @click="addTemplate">+ Tambah</button>
   </div>
 
   <div class="grid">
-    <div class="item" v-for="(t,i) in templates" :key="t.id">
-      <span>{{ t.name }}</span>
+    <div
+      class="item template-item"
+      v-for="(t,i) in templates"
+      :key="t.id"
+    >
+      <span class="item-name">{{ t.name }}</span>
 
       <div class="actions">
+        <!-- EDIT -->
         <svg class="icon" @click.stop="editTemplate(i)" viewBox="0 0 24 24">
           <path d="M3 17.25V21h3.75L17.8 9.94l-3.75-3.75L3 17.25z"/>
         </svg>
 
+        <!-- DELETE -->
         <svg class="icon delete" @click.stop="deleteTemplate(i)" viewBox="0 0 24 24">
-          <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12z"/>
+          <path d="M6 19c0 1.1.9 2 2 2h8
+                   c1.1 0 2-.9 2-2V7H6v12z"/>
         </svg>
       </div>
     </div>
