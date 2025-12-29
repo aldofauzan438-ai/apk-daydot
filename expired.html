@@ -1,39 +1,41 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Expired Item</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Expired Detail</title>
+
   <link rel="stylesheet" href="style.css">
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 </head>
 <body>
 
-<div id="app" class="container">
-  <h2>Tambah Expired Item</h2>
+<div id="expiredApp" class="container">
 
-  <input v-model="name" placeholder="Nama Item">
-  <button @click="save">Simpan</button>
+  <h3>{{ category }}</h3>
 
-  <br><br>
-  <a href="index.html">← Kembali</a>
+  <div class="form-card">
+    <input v-model="itemName" placeholder="Nama Item">
+
+    <p>Expired:</p>
+    <label v-for="o in options" :key="o.label">
+      <input type="radio" v-model="selected" :value="o.label">
+      {{ o.label }}
+    </label>
+
+    <button @click="addItem">Tambah</button>
+  </div>
+
+  <section>
+    <h4>Daftar Item</h4>
+    <div class="item" v-for="(i,index) in items" :key="index">
+      {{ i.name }} — <small>{{ i.expired }}</small>
+    </div>
+  </section>
+
+  <a href="index.html" class="back">← Kembali</a>
 </div>
 
-<script>
-Vue.createApp({
-  data() {
-    return { name: '' }
-  },
-  methods: {
-    save() {
-      if(!this.name) return alert('Isi nama item')
-      const data = JSON.parse(localStorage.getItem('expired')) || []
-      data.push(this.name)
-      localStorage.setItem('expired', JSON.stringify(data))
-      location.href = 'index.html'
-    }
-  }
-}).mount('#app')
-</script>
+<script src="app.js"></script>
 </body>
 </html>
