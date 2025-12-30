@@ -52,14 +52,16 @@ createApp({
 
     /* EXPIRED */
     addExpired() {
-      if (!this.newExpired.trim()) return;
-      this.expired.push({
-        id: Date.now(),
-        name: this.newExpired
-      });
-      this.newExpired = '';
-      this.save();
-    },
+  if (!this.newExpired.trim()) return;
+  this.expired.push({
+    id: Date.now(),
+    name: this.newExpired,
+    date: '' // tanggal expired
+  });
+  this.newExpired = '';
+  this.save();
+},
+
 
     editExpired(i) {
       const name = prompt('Edit nama expired item', this.expired[i].name);

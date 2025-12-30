@@ -53,7 +53,11 @@
            v-for="(e,i) in expired"
            :key="e.id"
            @click="openExpired(e.id)">
-        <span>{{ e.name }}</span>
+        <!-- <span>{{ e.name }}</span> -->
+         <div>
+          <strong>{{ e.name }}</strong><br>
+          <small v-if="e.date">Expired: {{ e.date }}</small>
+        </div>
         <div class="actions">
           <svg class="icon" @click.stop="editExpired(i)" viewBox="0 0 24 24">
             <path d="M3 17.25V21h3.75L17.8 9.94l-3.75-3.75L3 17.25z"/>

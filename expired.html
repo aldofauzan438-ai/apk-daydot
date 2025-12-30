@@ -1,17 +1,48 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Detail</title>
+  <title>Detail Expired</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-<body>
-<h2>Halaman Detail</h2>
-<p>ID: <span id="id"></span></p>
+<body class="container">
+
+<h2>Detail Expired Item</h2>
+
+<div class="input-box">
+  <input id="name" placeholder="Nama Item">
+</div>
+
+<div class="input-box">
+  <input id="date" type="date">
+</div>
+
+<div class="input-box">
+  <button onclick="save()">Simpan</button>
+</div>
+
 <a href="index.html">⬅ Kembali</a>
 
 <script>
   const params = new URLSearchParams(location.search);
-  document.getElementById('id').innerText = params.get('id');
+  const id = Number(params.get('id'));
+
+  const expired = JSON.parse(localStorage.getItem('expired')) || [];
+  const item = expired.find(e => e.id === id);
+
+  if (item) {
+    document.getElementById('name').value = item.name || '';
+    document.getElementById('date').value = item.date || '';
+  }
+
+  function save() {
+    item.name = document.getElementById('name').value;
+    item.date = document.getElementById('date').value;
+
+    localStorage.setItem('expired', JSON.stringify(expired));
+    alert('Item expired tersimpan');
+  }
 </script>
+
 </body>
 </html>
