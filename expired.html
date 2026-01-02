@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+  <meta name="viewport"
+content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta charset="UTF-8">
   <title>Detail Expired Item</title>
   <link rel="stylesheet" href="style.css">
@@ -34,12 +36,14 @@
 <hr>
 
 <div class="print-all">
-  <span onclick="printAll()">🖨️</span>
+  <span onclick="printAll()">🖨️ Print Semua</span>
 </div>
 
-<h3>Order List</h3>
-<div id="list"></div>
+<h3>Daftar Item</h3>
 
+<div id="print-area">
+  <div id="list"></div>
+</div>
 <a href="index.html">⬅ Kembali</a>
 
 <script>
@@ -77,24 +81,30 @@
   }
 
   function render() {
-    list.innerHTML = '';
-    data.orders.forEach(o => {
-      const div = document.createElement('div');
-      div.className = 'order-card';
-      div.innerHTML = `
-        <strong>${o.name}</strong><br>
+  list.innerHTML = '';
+  data.orders.forEach(o => {
+    const div = document.createElement('div');
+    div.className = 'order-card';
+    div.innerHTML = `
+      <div class="order-title">${o.name}</div>
+      <div class="order-meta">
         Masa: ${o.days} hari<br>
         Expired: ${calculateExpired(o.days)}
+      </div>
 
-        <div class="order-actions">
-          <span class="action-btn print" onclick="printOne('${o.name}',${o.days})">🖨️</span>
-          <span class="action-btn edit" onclick="editOrder(${o.id})">✏️</span>
-          <span class="action-btn delete" onclick="deleteOrder(${o.id})">🗑️</span>
-        </div>
-      `;
-      list.appendChild(div);
-    });
-  }
+      <div class="order-actions">
+        <span class="action-btn print" onclick="printOne('${o.name}',${o.days})">🖨️</span>
+        <span class="action-btn edit" onclick="editOrder(${o.id})">✏️</span>
+        <span class="action-btn delete" onclick="deleteOrder(${o.id})">🗑️</span>
+      </div>
+    `;
+    list.appendChild(div);
+  });
+}
+
+function printAll() {
+  window.print();
+}
 
   function editOrder(orderId) {
     const o = data.orders.find(x => x.id === orderId);
