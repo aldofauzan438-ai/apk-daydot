@@ -56,7 +56,8 @@ createApp({
   this.expired.push({
     id: Date.now(),
     name: this.newExpired,
-    date: '' // tanggal expired
+    date: '', // tanggal expired
+    orders:[]
   });
   this.newExpired = '';
   this.save();

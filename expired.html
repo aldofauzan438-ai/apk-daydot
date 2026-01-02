@@ -2,24 +2,42 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Detail Expired</title>
+  <title>Detail Expired Item</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body class="container">
 
 <h2>Detail Expired Item</h2>
 
+<!-- FORM -->
 <div class="input-box">
-  <input id="name" placeholder="Nama Item">
+  <input id="itemName" placeholder="Nama Item">
 </div>
 
 <div class="input-box">
-  <input id="date" type="date">
+  <select id="duration">
+    <option value="">Pilih Masa Expired</option>
+    <option value="1">1 Hari</option>
+    <option value="2">2 Hari</option>
+    <option value="4">4 Hari</option>
+    <option value="7">7 Hari</option>
+    <option value="14">14 Hari</option>
+    <option value="30">1 Bulan</option>
+    <option value="60">2 Bulan</option>
+    <option value="90">3 Bulan</option>
+    <option value="180">6 Bulan</option>
+  </select>
 </div>
 
 <div class="input-box">
-  <button onclick="save()">Simpan</button>
+  <button onclick="saveOrder()">Simpan</button>
 </div>
+
+<hr>
+
+<h3>Order List</h3>
+
+<div id="list"></div>
 
 <a href="index.html">⬅ Kembali</a>
 
@@ -27,21 +45,58 @@
   const params = new URLSearchParams(location.search);
   const id = Number(params.get('id'));
 
-  const expired = JSON.parse(localStorage.getItem('expired')) || [];
-  const item = expired.find(e => e.id === id);
+  let expired = JSON.parse(localStorage.getItem('expired')) || [];
+  let data = expired.find(e => e.id === id);
 
-  if (item) {
-    document.getElementById('name').value = item.name || '';
-    document.getElementById('date').value = item.date || '';
-  }
+  if (!data.orders) data.orders = [];
 
-  function save() {
-    item.name = document.getElementById('name').value;
-    item.date = document.getElementById('date').value;
+  function saveOrder() {
+    const name = document.getElementById('itemName').value;
+    const days = Number(document.getElementById('duration').value);
+
+    if (!name || !days) {
+      alert('Lengkapi form');
+      return;
+    }
+
+    const now = new Date();
+    const expiredDate = new Date(now);
+    expiredDate.setDate(now.getDate() + days);
+
+    data.orders.unshift({
+      itemName: name,
+      duration: days + (days >= 30 ? ' hari' : ' hari'),
+      expiredDate: expiredDate.toISOString().split('T')[0],
+      createdAt: Date.now()
+    });
 
     localStorage.setItem('expired', JSON.stringify(expired));
-    alert('Item expired tersimpan');
+
+    document.getElementById('itemName').value = '';
+    document.getElementById('duration').value = '';
+
+    render();
   }
+
+  function render() {
+    const list = document.getElementById('list');
+    list.innerHTML = '';
+
+    data.orders.forEach(o => {
+      const div = document.createElement('div');
+      div.className = 'item';
+      div.innerHTML = `
+        <div>
+          <strong>${o.itemName}</strong><br>
+          <small>Masa: ${o.duration}</small><br>
+          <small>Expired: ${o.expiredDate}</small>
+        </div>
+      `;
+      list.appendChild(div);
+    });
+  }
+
+  render();
 </script>
 
 </body>
