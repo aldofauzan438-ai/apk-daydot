@@ -109,3 +109,56 @@ footer {
   color: #999;
   margin: 30px 0 10px;
 }
+
+select {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+  background: #fff;
+  font-size: 14px;
+}
+
+button.primary {
+  background: #ff6b9d;
+  color: #fff;
+  border: none;
+  padding: 12px;
+  border-radius: 12px;
+  width: 100%;
+  font-size: 15px;
+}
+
+.order-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 14px;
+  margin-bottom: 12px;
+}
+
+.order-actions {
+  display: flex;
+  gap: 14px;
+  margin-top: 8px;
+}
+
+.action-btn {
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.action-btn.print { color: #3498db; }
+.action-btn.edit { color: #f39c12; }
+.action-btn.delete { color: #e74c3c; }
+
+.print-all {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+  gap: 10px;
+}
+
+.print-all span {
+  cursor: pointer;
+  font-size: 20px;
+}

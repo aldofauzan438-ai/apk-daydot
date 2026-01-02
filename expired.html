@@ -29,14 +29,15 @@
   </select>
 </div>
 
-<div class="input-box">
-  <button onclick="saveOrder()">Simpan</button>
-</div>
+<button class="primary" onclick="saveOrder()">Simpan</button>
 
 <hr>
 
-<h3>Order List</h3>
+<div class="print-all">
+  <span onclick="printAll()">🖨️</span>
+</div>
 
+<h3>Order List</h3>
 <div id="list"></div>
 
 <a href="index.html">⬅ Kembali</a>
@@ -47,53 +48,80 @@
 
   let expired = JSON.parse(localStorage.getItem('expired')) || [];
   let data = expired.find(e => e.id === id);
-
   if (!data.orders) data.orders = [];
 
+  function calculateExpired(days) {
+    const today = new Date(); // selalu HARI INI
+    const exp = new Date(today);
+    exp.setDate(today.getDate() + days);
+    return exp.toISOString().split('T')[0];
+  }
+
   function saveOrder() {
-    const name = document.getElementById('itemName').value;
-    const days = Number(document.getElementById('duration').value);
+    const name = itemName.value.trim();
+    const days = Number(duration.value);
 
-    if (!name || !days) {
-      alert('Lengkapi form');
-      return;
-    }
-
-    const now = new Date();
-    const expiredDate = new Date(now);
-    expiredDate.setDate(now.getDate() + days);
+    if (!name || !days) return alert('Lengkapi data');
 
     data.orders.unshift({
-      itemName: name,
-      duration: days + (days >= 30 ? ' hari' : ' hari'),
-      expiredDate: expiredDate.toISOString().split('T')[0],
-      createdAt: Date.now()
+      id: Date.now(),
+      name,
+      days,
+      expired: calculateExpired(days)
     });
 
     localStorage.setItem('expired', JSON.stringify(expired));
-
-    document.getElementById('itemName').value = '';
-    document.getElementById('duration').value = '';
-
+    itemName.value = '';
+    duration.value = '';
     render();
   }
 
   function render() {
-    const list = document.getElementById('list');
     list.innerHTML = '';
-
     data.orders.forEach(o => {
       const div = document.createElement('div');
-      div.className = 'item';
+      div.className = 'order-card';
       div.innerHTML = `
-        <div>
-          <strong>${o.itemName}</strong><br>
-          <small>Masa: ${o.duration}</small><br>
-          <small>Expired: ${o.expiredDate}</small>
+        <strong>${o.name}</strong><br>
+        Masa: ${o.days} hari<br>
+        Expired: ${calculateExpired(o.days)}
+
+        <div class="order-actions">
+          <span class="action-btn print" onclick="printOne('${o.name}',${o.days})">🖨️</span>
+          <span class="action-btn edit" onclick="editOrder(${o.id})">✏️</span>
+          <span class="action-btn delete" onclick="deleteOrder(${o.id})">🗑️</span>
         </div>
       `;
       list.appendChild(div);
     });
+  }
+
+  function editOrder(orderId) {
+    const o = data.orders.find(x => x.id === orderId);
+    const newName = prompt('Edit nama item', o.name);
+    if (!newName) return;
+    o.name = newName;
+    localStorage.setItem('expired', JSON.stringify(expired));
+    render();
+  }
+
+  function deleteOrder(orderId) {
+    if (!confirm('Hapus item ini?')) return;
+    data.orders = data.orders.filter(o => o.id !== orderId);
+    localStorage.setItem('expired', JSON.stringify(expired));
+    render();
+  }
+
+  function printOne(name, days) {
+    alert(`PRINT\n${name}\nMasa: ${days} hari\nExpired: ${calculateExpired(days)}`);
+  }
+
+  function printAll() {
+    let text = 'PRINT SEMUA\\n\\n';
+    data.orders.forEach(o => {
+      text += `${o.name} | ${o.days} hari | ${calculateExpired(o.days)}\\n`;
+    });
+    alert(text);
   }
 
   render();
