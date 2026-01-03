@@ -74,5 +74,18 @@
 </div>
 
 <script src="app.js"></script>
+<script src="db.js"></script>
+<script>
+openDB(() => {
+  getAllTemplates(data => {
+    if (data.length === 0) {
+      // DEFAULT DATA (WAJIB)
+      saveTemplate({ id: 1, name: 'Daydot Harian', orders: [] });
+      saveTemplate({ id: 2, name: 'Daydot Bulanan', orders: [] });
+    }
+  });
+});
+</script>
+
 </body>
 </html>
