@@ -49,29 +49,35 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 
-  const params = new URLSearchParams(location.search);
-  const pageId = Number(params.get('id'));
-
   const list = document.getElementById('list');
   const itemName = document.getElementById('itemName');
   const duration = document.getElementById('duration');
 
   // ===== AMBIL DATA DARI DASHBOARD =====
   let expired = [];
-  try {
-    expired = JSON.parse(localStorage.getItem('expired')) || [];
-  } catch {
-    expired = [];
-  }
+try {
+  expired = JSON.parse(localStorage.getItem('expired')) || [];
+} catch {
+  expired = [];
+}
 
-  // cari template sesuai id
-  let data = expired.find(e => e.id === pageId);
+// AMBIL ID DARI URL
+const params = new URLSearchParams(location.search);
+const pageId = Number(params.get('id'));
 
-  if (!data) {
-    data = { id: pageId, orders: [] };
-    expired.push(data);
-    localStorage.setItem('expired', JSON.stringify(expired));
-  }
+// CARI DATA YANG SUDAH ADA (BUKAN BIKIN BARU!)
+let data = expired.find(e => e.id === pageId);
+
+// JIKA BENAR-BENAR TIDAK ADA → BARU BUAT
+if (!data) {
+  data = {
+    id: pageId,
+    name: 'Unknown',
+    orders: []
+  };
+  expired.push(data);
+  localStorage.setItem('expired', JSON.stringify(expired));
+}
 
   // ===== UTIL =====
   function formatDateShort(dateStr) {
