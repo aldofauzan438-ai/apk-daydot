@@ -22,9 +22,11 @@ createApp({
 
       // EXPIRED DASHBOARD
       // ⛔ HANYA yang TIDAK punya parentId
-      getAll('expired', data => {
-        this.expired = (data || []).filter(x => !x.parentId);
-      });
+        getAll('expired', data => {
+      this.expired = (data || []).filter(x =>
+        !('days' in x) && !('openedAt' in x)
+      );
+    });
     },
 
     /* =====================
