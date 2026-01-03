@@ -62,7 +62,7 @@ content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable
   const list = document.getElementById('list');
   const itemName = document.getElementById('itemName');
   const duration = document.getElementById('duration');
-  
+
   const editName = document.getElementById('editName');
   const editDays = document.getElementById('editDays');
 
@@ -131,21 +131,46 @@ content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable
     });
   }
 
- function editOrder(orderId) {
+function editOrder(orderId) {
   const o = data.orders.find(x => x.id === orderId);
   if (!o) return;
 
-  editingId = orderId;
+  // Edit nama
+  const newName = prompt('Edit nama item', o.name);
+  if (newName === null) return;
 
-  editName.value = o.name;
-  editDays.value = o.days;
+  // "Dropdown" versi alert
+  const options = [
+    { label: '1 Hari', value: 1 },
+    { label: '2 Hari', value: 2 },
+    { label: '4 Hari', value: 4 },
+    { label: '7 Hari', value: 7 },
+    { label: '14 Hari', value: 14 },
+    { label: '30 Hari', value: 30 },
+    { label: '60 Hari', value: 60 },
+    { label: '90 Hari', value: 90 },
+    { label: '180 Hari', value: 180 }
+  ];
 
-  document.getElementById('editModal').classList.remove('hidden');
-}
+  let message = 'Pilih masa expired:\n';
+  options.forEach((o, i) => {
+    message += `${i + 1}. ${o.label}\n`;
+  });
 
-  function closeEdit() {
-  document.getElementById('editModal').classList.add('hidden');
-  editingId = null;
+  const choice = prompt(message);
+  if (choice === null) return;
+
+  const selected = options[Number(choice) - 1];
+  if (!selected) {
+    alert('Pilihan tidak valid');
+    return;
+  }
+
+  o.name = newName.trim();
+  o.days = selected.value;
+
+  localStorage.setItem('expired', JSON.stringify(expired));
+  render();
 }
 
   function saveEdit() {
@@ -202,32 +227,7 @@ Expired : ${formatDate(calculateExpired(o.days, o.opened))}\n\n`;
   render();
 </script>
 
-<!-- MODAL EDIT -->
-<div id="editModal" class="modal hidden">
-  <div class="modal-content">
-    <h3>Edit Item</h3>
 
-    <input id="editName" placeholder="Nama Item">
-
-    <select id="editDays">
-      <option value="">Pilih Masa Expired</option>
-      <option value="1">1 Hari</option>
-      <option value="2">2 Hari</option>
-      <option value="4">4 Hari</option>
-      <option value="7">7 Hari</option>
-      <option value="14">14 Hari</option>
-      <option value="30">1 Bulan</option>
-      <option value="60">2 Bulan</option>
-      <option value="90">3 Bulan</option>
-      <option value="180">6 Bulan</option>
-    </select>
-
-    <div class="modal-actions">
-      <button onclick="closeEdit()">Batal</button>
-      <button class="primary" onclick="saveEdit()">Simpan</button>
-    </div>
-  </div>
-</div>
 
 </body>
 </html>
