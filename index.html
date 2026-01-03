@@ -2,16 +2,17 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard Expired</title>
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body class="container">
 
 <h2>Dashboard Expired</h2>
 
 <div class="input-box">
-  <input id="name" placeholder="Nama Kategori (ex: All Syrup)">
+  <input id="name" placeholder="Nama Kategori (contoh: All Syrup)">
 </div>
 <button onclick="add()">Tambah</button>
 
@@ -22,48 +23,58 @@
 <script src="db.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
+
   const list = document.getElementById('list');
   const name = document.getElementById('name');
 
   openDB(() => {
-    seed();
+    seedDefault();
     render();
   });
 
-  function seed() {
+  function seedDefault() {
     getAllTemplates(data => {
       if (data.length === 0) {
         saveTemplate({ id: Date.now(), name: 'All Syrup', orders: [] });
-        saveTemplate({ id: Date.now()+1, name: 'Food', orders: [] });
+        saveTemplate({ id: Date.now() + 1, name: 'Food', orders: [] });
       }
     });
   }
 
   window.add = function () {
-    if (!name.value.trim()) return alert('Isi nama');
+    if (!name.value.trim()) {
+      alert('Isi nama kategori');
+      return;
+    }
+
     saveTemplate({
       id: Date.now(),
       name: name.value.trim(),
       orders: []
-    }, () => {
-      name.value = '';
-      render();
-    });
+    }, render);
+
+    name.value = '';
   };
 
   window.del = function (id) {
-    if (!confirm('Hapus kategori?')) return;
+    if (!confirm('Hapus kategori ini?')) return;
     deleteTemplate(id, render);
   };
 
   function render() {
     list.innerHTML = '';
+
     getAllTemplates(data => {
+      if (data.length === 0) {
+        list.innerHTML = '<p>Belum ada kategori</p>';
+        return;
+      }
+
       data.forEach(t => {
         list.innerHTML += `
           <div class="order-card">
             <b>${t.name}</b><br>
-            Total item: ${t.orders.length}<br>
+            Total item: ${t.orders.length}<br><br>
             <button onclick="location.href='expired.html?id=${t.id}'">Buka</button>
             <button onclick="del(${t.id})">Hapus</button>
           </div>
@@ -71,10 +82,9 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
   }
+
 });
 </script>
 
 </body>
 </html>
-
- 

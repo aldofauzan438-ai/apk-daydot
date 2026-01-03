@@ -3,21 +3,23 @@ const DB_NAME = 'expiredDB';
 const STORE = 'expired';
 
 function openDB(callback) {
-  const req = indexedDB.open(DB_NAME, 1);
+  const request = indexedDB.open(DB_NAME, 1);
 
-  req.onupgradeneeded = e => {
+  request.onupgradeneeded = e => {
     db = e.target.result;
     if (!db.objectStoreNames.contains(STORE)) {
       db.createObjectStore(STORE, { keyPath: 'id' });
     }
   };
 
-  req.onsuccess = e => {
+  request.onsuccess = e => {
     db = e.target.result;
     callback && callback();
   };
 
-  req.onerror = () => alert('IndexedDB gagal dibuka');
+  request.onerror = () => {
+    alert('Gagal membuka database');
+  };
 }
 
 function getAllTemplates(cb) {
