@@ -126,17 +126,28 @@ content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable
     });
   }
 
-  function editOrder(orderId) {
-    const o = data.orders.find(x => x.id === orderId);
-    if (!o) return;
+ function editOrder(orderId) {
+  const o = data.orders.find(x => x.id === orderId);
+  if (!o) return;
 
-    const newName = prompt('Edit nama item', o.name);
-    if (!newName) return;
+  const newName = prompt('Edit nama item', o.name);
+  if (newName === null) return; // cancel
 
-    o.name = newName;
-    localStorage.setItem('expired', JSON.stringify(expired));
-    render();
+  const newDays = prompt('Edit masa expired (hari)', o.days);
+  if (newDays === null) return;
+
+  const daysNumber = Number(newDays);
+  if (!newName.trim() || !daysNumber || daysNumber <= 0) {
+    alert('Data tidak valid');
+    return;
   }
+
+  o.name = newName.trim();
+  o.days = daysNumber;
+
+  localStorage.setItem('expired', JSON.stringify(expired));
+  render();
+}
 
   function deleteOrder(orderId) {
     if (!confirm('Hapus item ini?')) return;
