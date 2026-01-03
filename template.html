@@ -116,17 +116,13 @@ searchInput.addEventListener('input', () => {
 /* =====================
    ADD TO TEMPLATE
 ===================== */
-function addToTemplate(o) {
+function addToTemplate(expiredId) {
   addData('template_items', {
     id: Date.now(),
     templateId,
-    expiredId: expired.id
+    expiredId
   }, loadTemplateItems);
-
-  searchInput.value = '';
-  searchResult.innerHTML = '';
 }
-
 /* =====================
    PRINT
 ===================== */
@@ -159,30 +155,19 @@ Expired : ${calcExpired(o.days, o.openedAt)}\n\n`;
 /* =====================
    RENDER
 ===================== */
-function renderTemplateItems(items) {
-  list.innerHTML = '';
+function renderSearchResults(items) {
+  searchResult.innerHTML = '';
 
   if (!items.length) {
-    list.innerHTML = '<p class="empty">Belum ada item</p>';
+    searchResult.innerHTML = '<p class="empty">Tidak ditemukan</p>';
     return;
   }
 
-  items.forEach(o => {
-    list.innerHTML += `
-      <div class="expired-card">
-        <div class="expired-title">${o.name}</div>
-
-        <div class="expired-meta">
-          Opened : ${formatDate(o.openedAt)}<br>
-          Time : ${formatTime(o.openedAt)}<br>
-          Masa exp : ${o.days} hari<br>
-          Expired : ${calcExpired(o.days, o.openedAt)}
-        </div>
-
-        <div class="expired-actions">
-          <button onclick="printOne(${o.id})">🖨️</button>
-          <button onclick="removeFromTemplate(${o.templateItemId})">🗑️</button>
-        </div>
+  items.forEach(item => {
+    searchResult.innerHTML += `
+      <div class="expired-card clickable"
+           onclick="addToTemplate(${item.id})">
+        <strong>${item.name}</strong>
       </div>
     `;
   });

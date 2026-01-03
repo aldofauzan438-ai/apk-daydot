@@ -255,3 +255,16 @@ footer {
 .search-result .expired-card:active {
   opacity: 0.6;
 }
+
+.clickable {
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.expired-card {
+  pointer-events: auto;
+}
+.expired-card {
+  position: relative;
+  z-index: 5;
+}
