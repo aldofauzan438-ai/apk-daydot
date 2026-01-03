@@ -71,10 +71,10 @@ openDB(() => {
 });
 
 function loadTemplateItems() {
-  getAll('template_items', templateItems => {
+  getAll('template_items', templateLinks => {
     getAll('expired_items', expiredItems => {
 
-      const items = templateItems
+      templateItems = templateLinks
         .filter(t => t.templateId === templateId)
         .map(t => {
           const exp = expiredItems.find(e => e.id === t.expiredId);
@@ -82,35 +82,31 @@ function loadTemplateItems() {
 
           return {
             ...exp,
-            templateItemId: t.id // untuk hapus dari template
+            templateItemId: t.id
           };
         })
         .filter(Boolean);
 
-      renderTemplateItems(items);
+      renderTemplateItems(templateItems);
     });
   });
 }
+
 
 /* =====================
    SEARCH
 ===================== */
 searchInput.addEventListener('input', () => {
   const q = searchInput.value.toLowerCase();
-  searchResult.innerHTML = '';
 
-  if (!q) return;
+  if (!q) {
+    searchResult.innerHTML = '';
+    return;
+  }
 
-  allExpired
-    .filter(x => x.name.toLowerCase().includes(q))
-    .slice(0, 5)
-    .forEach(x => {
-      const div = document.createElement('div');
-      div.className = 'expired-card clickable';
-      div.innerHTML = `<b>${x.name}</b>`;
-      div.onclick = () => addToTemplate(x);
-      searchResult.appendChild(div);
-    });
+  renderSearchResults(
+    allExpired.filter(x => x.name.toLowerCase().includes(q)).slice(0, 5)
+  );
 });
 
 /* =====================
@@ -126,8 +122,8 @@ function addToTemplate(expiredId) {
 /* =====================
    PRINT
 ===================== */
-function printOne(id) {
-  const o = templateItems.find(x => x.id === id);
+function printTemplateItem(templateItemId) {
+  const o = templateItems.find(x => x.templateItemId === templateItemId);
   if (!o) return;
 
   alert(
@@ -139,6 +135,7 @@ Masa exp : ${o.days} hari
 Expired : ${calcExpired(o.days, o.openedAt)}`
   );
 }
+
 
 function printAll() {
   let t = 'PRINT TEMPLATE\n\n';
@@ -172,6 +169,37 @@ function renderSearchResults(items) {
     `;
   });
 }
+
+function renderTemplateItems(items) {
+  list.innerHTML = '';
+
+  if (!items.length) {
+    list.innerHTML = '<p class="empty">Belum ada item</p>';
+    return;
+  }
+
+  items.forEach(o => {
+    list.innerHTML += `
+      <div class="expired-card">
+        <div class="expired-title">
+          ${o.name}
+        </div>
+
+        <div class="expired-meta">
+          Opened : ${formatDate(o.openedAt)}<br>
+          Masa exp : ${o.days} hari<br>
+          Expired : ${calcExpired(o.days, o.openedAt)}
+        </div>
+
+        <div class="expired-actions">
+          <button onclick="printTemplateItem(${o.templateItemId})">🖨️</button>
+          <button onclick="removeFromTemplate(${o.templateItemId})">🗑️</button>
+        </div>
+      </div>
+    `;
+  });
+}
+
 
 function removeFromTemplate(templateItemId) {
   if (!confirm('Hapus item dari template?')) return;
