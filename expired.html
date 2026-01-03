@@ -122,9 +122,9 @@ content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable
         </div>
 
         <div class="order-actions">
-          <span class="action-btn print" onclick="printOne('${o.name}', ${o.days}, '${opened}')">🖨️</span>
-          <span class="action-btn edit" onclick="editOrder(${o.id})">✏️</span>
-          <span class="action-btn delete" onclick="deleteOrder(${o.id})">🗑️</span>
+          <button class="action-btn print" onclick="printOne('${o.name}', ${o.days}, '${opened}')">🖨️</button>
+          <button class="action-btn edit" onclick="editOrder(${o.id})">✏️</button>
+          <button class="action-btn delete" onclick="deleteOrder(${o.id})">🗑️</button>
         </div>
       `;
       list.appendChild(div);
