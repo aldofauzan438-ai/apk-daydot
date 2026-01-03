@@ -53,3 +53,5 @@ function deleteData(storeName, id, cb) {
   tx.objectStore(storeName).delete(id);
   tx.oncomplete = () => cb && cb();
 }
+
+indexedDB.deleteDatabase('expiredDB');

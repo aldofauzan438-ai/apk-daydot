@@ -74,15 +74,20 @@ function loadTemplateItems() {
   getAll('template_items', templateItems => {
     getAll('expired_items', expiredItems => {
 
-      const related = templateItems
+      const items = templateItems
         .filter(t => t.templateId === templateId)
         .map(t => {
           const exp = expiredItems.find(e => e.id === t.expiredId);
-          return exp ? { ...exp, templateItemId: t.id } : null;
+          if (!exp) return null;
+
+          return {
+            ...exp,
+            templateItemId: t.id // untuk hapus dari template
+          };
         })
         .filter(Boolean);
 
-      renderTemplateItems(related);
+      renderTemplateItems(items);
     });
   });
 }
