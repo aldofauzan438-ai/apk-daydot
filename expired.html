@@ -67,19 +67,27 @@ content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable
   const editDays = document.getElementById('editDays');
 
 
-  function getToday() {
-    return new Date().toISOString().split('T')[0];
-  }
+  function getNow() {
+  const d = new Date();
+  return {
+    date: d.toISOString().split('T')[0], // YYYY-MM-DD
+    time: d.toTimeString().slice(0,5)    // HH:MM
+  };
+}
 
-  function calculateExpired(days, opened) {
-    const d = new Date(opened);
+  function calculateExpired(days, openedDate) {
+    const d = new Date(openedDate);
     d.setDate(d.getDate() + days);
-    return d.toISOString().split('T')[0];
+
+    return {
+      date: d.toISOString().split('T')[0],
+    };
   }
 
   function saveOrder() {
     const name = itemName.value.trim();
     const days = Number(duration.value);
+    const now = getNow();
 
     if (!name || !days) {
       alert('Lengkapi data');
@@ -90,7 +98,8 @@ content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable
       id: Date.now(),
       name: name,       
       days: days,
-      opened: getToday()
+      openedDate: now.date,
+      openedTime: now.time
     });
 
     localStorage.setItem('expired', JSON.stringify(expired));
@@ -109,20 +118,23 @@ content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable
     list.innerHTML = '';
 
     data.orders.forEach(o => {
-      const opened = o.opened || getToday();
+      const openedDate = o.openedDate || o.opened || getNow().date;
+      const openedTime = o.openedTime || '00:00';
+      
+      const expired = calculateExpired(o.days, o.openedDate)
 
       const div = document.createElement('div');
       div.className = 'order-card';
       div.innerHTML = `
-        <div class="order-title">${o.name}</div>
+        <div class="order-title">Nama Item : ${o.name}</div>
         <div class="order-meta">
-          Opened: ${formatDate(opened)}<br>
+          Opened: ${formatDate(o.opened.date)} (${o.openedTime})<br>
           Masa exp: ${o.days} hari<br>
-          Expired: ${formatDate(calculateExpired(o.days, opened))}
+          Expired: ${formatDate(expired.date)} (${o.openedTime})
         </div>
 
         <div class="order-actions">
-          <button class="action-btn print" onclick="printOne('${o.name}', ${o.days}, '${opened}')">🖨️</button>
+          <button class="action-btn print" onclick="printOne('${o.name}', ${o.days}, '${o.openedDate}', '${o.openedTime}')">🖨️</button>
           <button class="action-btn edit" onclick="editOrder(${o.id})">✏️</button>
           <button class="action-btn delete" onclick="deleteOrder(${o.id})">🗑️</button>
         </div>
@@ -203,13 +215,15 @@ function editOrder(orderId) {
     render();
   }
 
-  function printOne(name, days, opened) {
+  function printOne(name, days, openedDate, openedTime) {
+    const exp = calculateExpired(days, openedDate)
+
     alert(
 `Tomoro Coffee
-${name}
-Opened : ${formatDate(opened)}
+Nama Item : ${name}
+Opened : ${formatDate(openedDate)} (${openedTime})
 Masa exp : ${days} hari
-Expired : ${formatDate(calculateExpired(days, opened))}`
+Expired : ${formatDate(exp.date)} (${openedTime})`
     );
   }
 
