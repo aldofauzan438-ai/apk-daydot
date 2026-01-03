@@ -49,29 +49,33 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 
+  const params = new URLSearchParams(location.search);
+  const pageId = Number(params.get('id'));
 
   const list = document.getElementById('list');
   const itemName = document.getElementById('itemName');
   const duration = document.getElementById('duration');
-  
-let expired;
-try {
-  expired = JSON.parse(localStorage.getItem('expired'));
-} catch (e) {
-  expired = null;
-}
 
-if (!expired || !expired.orders) {
-  expired = { orders: [] };
-  localStorage.setItem('expired', JSON.stringify(expired));
-}
+  // ===== AMBIL DATA DARI DASHBOARD =====
+  let expired = [];
+  try {
+    expired = JSON.parse(localStorage.getItem('expired')) || [];
+  } catch {
+    expired = [];
+  }
 
-let data = expired;
+  // cari template sesuai id
+  let data = expired.find(e => e.id === pageId);
 
-  
+  if (!data) {
+    data = { id: pageId, orders: [] };
+    expired.push(data);
+    localStorage.setItem('expired', JSON.stringify(expired));
+  }
 
+  // ===== UTIL =====
   function formatDateShort(dateStr) {
-    const [y, m, d] = dateStr.split('-');
+    const [y,m,d] = dateStr.split('-');
     return `${d}-${m}-${y.slice(2)}`;
   }
 
@@ -88,7 +92,7 @@ let data = expired;
     return d.toISOString().split('T')[0];
   }
 
-  /* ================= SIMPAN ================= */
+  // ===== SIMPAN =====
   window.saveOrder = function () {
     if (!itemName.value || !duration.value) {
       alert('Lengkapi data');
@@ -108,7 +112,7 @@ let data = expired;
     render();
   };
 
-  /* ================= RENDER ================= */
+  // ===== RENDER =====
   function render() {
     list.innerHTML = '';
 
@@ -140,7 +144,7 @@ let data = expired;
     });
   }
 
-  /* ================= PRINT SATUAN ================= */
+  // ===== PRINT SATU =====
   window.printOne = function (orderId) {
     const o = data.orders.find(x => x.id === orderId);
     if (!o) return;
@@ -157,7 +161,7 @@ Expired : ${formatDateShort(exp)}`
     );
   };
 
-  /* ================= EDIT ================= */
+  // ===== EDIT =====
   window.editOrder = function (orderId) {
     const o = data.orders.find(x => x.id === orderId);
     if (!o) return;
@@ -175,7 +179,7 @@ Expired : ${formatDateShort(exp)}`
     render();
   };
 
-  /* ================= HAPUS ================= */
+  // ===== HAPUS =====
   window.deleteOrder = function (orderId) {
     if (!confirm('Hapus item ini?')) return;
 
@@ -184,7 +188,7 @@ Expired : ${formatDateShort(exp)}`
     render();
   };
 
-  /* ================= PRINT SEMUA ================= */
+  // ===== PRINT SEMUA =====
   window.printAll = function () {
     let text = 'PRINT SEMUA\n\n';
     const now = getLiveTime();
@@ -201,11 +205,10 @@ Expired : ${formatDateShort(exp)}\n\n`;
     alert(text);
   };
 
-  /* ================= LIVE TIME ================= */
-  setInterval(function () {
-    document.querySelectorAll('.live-time').forEach(el => {
-      el.textContent = getLiveTime();
-    });
+  // ===== LIVE TIME =====
+  setInterval(() => {
+    document.querySelectorAll('.live-time')
+      .forEach(el => el.textContent = getLiveTime());
   }, 60000);
 
   render();
