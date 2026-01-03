@@ -49,38 +49,34 @@ content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable
 <script>
 document.addEventListener('DOMContentLoaded', () => {
 
+  const params = new URLSearchParams(location.search);
+  const id = Number(params.get('id')); // ⬅️ ID dari halaman sebelumnya
+
   const list = document.getElementById('list');
   const itemName = document.getElementById('itemName');
   const duration = document.getElementById('duration');
 
-  let data;
+  // ✅ AMBIL DATA YANG BENAR
+  let expired = JSON.parse(localStorage.getItem('expired')) || [];
+  let data = expired.find(e => e.id === id);
 
-try {
-  data = JSON.parse(localStorage.getItem('expired'));
-} catch (e) {
-  data = null;
-}
-
-if (!data || !data.orders) {
-  data = { orders: [] };
-}
-function saveStorage() {
-  try {
-    localStorage.setItem('expired', JSON.stringify(data));
-  } catch (e) {
-    // Safari private mode → ignore
+  if (!data) {
+    data = { id, orders: [] };
+    expired.push(data);
+    localStorage.setItem('expired', JSON.stringify(expired));
   }
-}
 
-function formatDateShort(dateStr) {
-  if (!dateStr) return '-';
-  const [y,m,d] = dateStr.split('-');
-  return `${d}-${m}-${y.slice(2)}`;
-}
-
+  function formatDateShort(dateStr) {
+    const [y,m,d] = dateStr.split('-');
+    return `${d}-${m}-${y.slice(2)}`;
+  }
 
   function getLiveTime() {
-    return new Date().toTimeString().slice(0,5);
+    const d = new Date();
+    return d.toLocaleTimeString('id-ID', {
+      hour: '2-digit',
+      minute: '2-digit'
+    });
   }
 
   function calculateExpired(days, openedDate) {
@@ -90,33 +86,32 @@ function formatDateShort(dateStr) {
   }
 
   window.saveOrder = function () {
-  if (!itemName.value || !duration.value) {
-    alert('Lengkapi data');
-    return;
-  }
+    if (!itemName.value || !duration.value) {
+      alert('Lengkapi data');
+      return;
+    }
 
-  data.orders.push({
-    id: Date.now(),
-    name: itemName.value,
-    days: Number(duration.value),
-    openedDate: new Date().toISOString().split('T')[0]
-  });
+    data.orders.push({
+      id: Date.now(),
+      name: itemName.value,
+      days: Number(duration.value),
+      openedDate: new Date().toISOString().split('T')[0]
+    });
 
-  saveStorage();
-  itemName.value = '';
-  duration.value = '';
-  render();
-};
-
+    localStorage.setItem('expired', JSON.stringify(expired));
+    itemName.value = '';
+    duration.value = '';
+    render();
+  };
 
   function render() {
     list.innerHTML = '';
 
     if (data.orders.length === 0) {
-    list.innerHTML = '<p style="opacity:.6">Belum ada item</p>';
-    return;
-
+      list.innerHTML = '<p>Belum ada item</p>';
+      return;
     }
+
     data.orders.forEach(o => {
       const exp = calculateExpired(o.days, o.openedDate);
       list.innerHTML += `
@@ -131,6 +126,7 @@ function formatDateShort(dateStr) {
     });
   }
 
+  // ⏱️ LIVE TIME (Safari aman)
   setInterval(() => {
     document.querySelectorAll('.live-time')
       .forEach(el => el.textContent = getLiveTime());
@@ -138,8 +134,8 @@ function formatDateShort(dateStr) {
 
   render();
 });
-
 </script>
+
 
 
 
