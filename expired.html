@@ -63,8 +63,6 @@ content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable
   const itemName = document.getElementById('itemName');
   const duration = document.getElementById('duration');
 
-  const editName = document.getElementById('editName');
-  const editDays = document.getElementById('editDays');
 
   function formatDateShort(dateStr) {
   if (!dateStr) return '';
@@ -195,28 +193,6 @@ function editOrder(orderId) {
   render();
 }
 
-  function saveEdit() {
-  if (!editingId) return;
-
-  const name = editName.value.trim();
-  const days = Number(editDays.value);
-
-  if (!name || !days) {
-    alert('Lengkapi data');
-    return;
-  }
-
-  const o = data.orders.find(x => x.id === editingId);
-  if (!o) return;
-
-  o.name = name;
-  o.days = days;
-
-  localStorage.setItem('expired', JSON.stringify(expired));
-  closeEdit();
-  render();
-}
-
 
   function deleteOrder(orderId) {
     if (!confirm('Hapus item ini?')) return;
@@ -239,15 +215,19 @@ Expired   : ${formatDateShort(exp.date)}`
   );
 }
 
-  function printAll() {
+ function printAll() {
   let text = 'PRINT SEMUA\n\n';
+  const nowTime = getLiveTime();
+
   data.orders.forEach(o => {
     const exp = calculateExpired(o.days, o.openedDate);
     text += `${o.name}
-Opened : ${formatDate(o.openedDate)} (${o.openedTime})
-Masa exp : ${o.days} hari
-Expired : ${formatDate(exp.date)} (${o.openedTime})\n\n`;
+Opened    : ${formatDateShort(o.openedDate)}
+Time      : ${nowTime}
+Masa exp  : ${o.days} hari
+Expired   : ${formatDateShort(exp.date)}\n\n`;
   });
+
   alert(text);
 }
 
