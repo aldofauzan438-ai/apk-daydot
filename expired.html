@@ -52,15 +52,22 @@ content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable
 
   let expired = JSON.parse(localStorage.getItem('expired')) || [];
   let data = expired.find(e => e.id === id);
-  if (!data.orders) data.orders = [];
 
-  function getToday() {
-    const d = new Date();
-    return d.toISOString().split('T')[0]; // YYYY-MM-DD
+  if (!data) {
+    data = { id, orders: [] };
+    expired.push(data);
   }
 
-  function calculateExpired(days, openedDate) {
-    const d = new Date(openedDate);
+  const list = document.getElementById('list');
+  const itemName = document.getElementById('itemName');
+  const duration = document.getElementById('duration');
+
+  function getToday() {
+    return new Date().toISOString().split('T')[0];
+  }
+
+  function calculateExpired(days, opened) {
+    const d = new Date(opened);
     d.setDate(d.getDate() + days);
     return d.toISOString().split('T')[0];
   }
@@ -69,12 +76,15 @@ content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable
     const name = itemName.value.trim();
     const days = Number(duration.value);
 
-    if (!name || !days) return alert('Lengkapi data');
+    if (!name || !days) {
+      alert('Lengkapi data');
+      return;
+    }
 
     data.orders.push({
       id: Date.now(),
-      name : itemName,
-      days : days,
+      name: name,       // ✅ FIX
+      days: days,
       opened: getToday()
     });
 
@@ -85,36 +95,38 @@ content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable
   }
 
   function render() {
-  list.innerHTML = '';
-  data.orders.forEach(o => {
-    const div = document.createElement('div');
-    div.className = 'order-card';
-    div.innerHTML = `
-      <div class="order-title">${o.name}</div>
-      <div class="order-meta">
-        Opened: ${o.opened}
-        Masa exp: ${o.days} hari<br>
-        Expired: ${calculateExpired(o.days,o.opened)}
-      </div>
+    list.innerHTML = '';
 
-      <div class="order-actions">
-        <span class="action-btn print" onclick="printOne('${o.name}',${o.days},'${o.opened}')">🖨️</span>
-        <span class="action-btn edit" onclick="editOrder('${o.name}',${o.days})">✏️</span>
-        <span class="action-btn delete" onclick="deleteOrder(${o.id})">🗑️</span>
-      </div>
-    `;
-    list.appendChild(div);
-  });
-}
+    data.orders.forEach(o => {
+      const opened = o.opened || getToday();
 
-function printAll() {
-  window.print();
-}
+      const div = document.createElement('div');
+      div.className = 'order-card';
+      div.innerHTML = `
+        <div class="order-title">${o.name}</div>
+        <div class="order-meta">
+          Opened: ${opened}<br>
+          Masa exp: ${o.days} hari<br>
+          Expired: ${calculateExpired(o.days, opened)}
+        </div>
+
+        <div class="order-actions">
+          <span class="action-btn print" onclick="printOne('${o.name}', ${o.days}, '${opened}')">🖨️</span>
+          <span class="action-btn edit" onclick="editOrder(${o.id})">✏️</span>
+          <span class="action-btn delete" onclick="deleteOrder(${o.id})">🗑️</span>
+        </div>
+      `;
+      list.appendChild(div);
+    });
+  }
 
   function editOrder(orderId) {
     const o = data.orders.find(x => x.id === orderId);
+    if (!o) return;
+
     const newName = prompt('Edit nama item', o.name);
     if (!newName) return;
+
     o.name = newName;
     localStorage.setItem('expired', JSON.stringify(expired));
     render();
@@ -128,16 +140,22 @@ function printAll() {
   }
 
   function printOne(name, days, opened) {
-    alert(`Tomoro Coffee daydot\n${name}\nOpened : ${opened}\nMasa exp : ${days} hari\nExpired: ${calculateExpired(days,opened)}`);
+    alert(
+`Tomoro Coffee
+${name}
+Opened : ${opened}
+Masa exp : ${days} hari
+Expired : ${calculateExpired(days, opened)}`
+    );
   }
 
   function printAll() {
-    let text = 'PRINT SEMUA\\n\\n';
+    let text = 'PRINT SEMUA\n\n';
     data.orders.forEach(o => {
-      text += `${o.name} 
-      Opened : ${o.opened} 
-      Masa exp : ${o.days} hari  
-      Expired : ${calculateExpired(o.days, o.opened)}\\n`;
+      text += `${o.name}
+Opened : ${o.opened}
+Masa exp : ${o.days} hari
+Expired : ${calculateExpired(o.days, o.opened)}\n\n`;
     });
     alert(text);
   }
