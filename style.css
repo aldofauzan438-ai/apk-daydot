@@ -197,3 +197,72 @@ button.primary {
   color: #999;
   font-size: 14px;
 }
+
+/* ===== EXPIRED DETAIL LAYOUT ===== */
+.card {
+  background: #fff;
+  border-radius: 18px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.input-box {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.input-box input,
+.input-box select {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+  font-size: 16px;
+}
+
+/* BUTTON */
+button.primary {
+  width: 100%;
+  margin-top: 6px;
+  padding: 14px;
+  border-radius: 14px;
+  border: none;
+  background: #ff6b9d;
+  color: white;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+/* LIST ITEM */
+.order-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 14px;
+  margin-bottom: 12px;
+}
+
+.order-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.order-actions button {
+  flex: 1;
+  padding: 10px 0;
+  border-radius: 10px;
+  border: none;
+  background: #f1f1f1;
+  font-size: 14px;
+}
+
+/* BACK */
+.back {
+  display: block;
+  margin: 24px 0 10px;
+  color: #ff6b9d;
+  text-decoration: none;
+  font-weight: 500;
+}

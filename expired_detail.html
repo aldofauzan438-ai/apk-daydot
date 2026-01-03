@@ -47,6 +47,9 @@
 
 <script src="db.js"></script>
 <script>
+const parentId = Number(
+  new URLSearchParams(location.search).get('id')
+);
 let expiredData = [];
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -73,11 +76,13 @@ document.addEventListener('DOMContentLoaded', () => {
   openDB(loadData);
 
   function loadData() {
-    getAll('expired', data => {
-      expiredData = data || [];
-      render();
-    });
-  }
+  getAll('expired', data => {
+    expiredData = (data || []).filter(
+      x => x.parentId === parentId
+    );
+    render();
+  });
+}
 
   window.saveItem = function () {
     if (!itemName.value || !duration.value) {
@@ -86,11 +91,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     addData('expired', {
-      id: Date.now(),
-      name: itemName.value.trim(),
-      days: Number(duration.value),
-      openedDate: new Date().toISOString().split('T')[0]
-    }, loadData);
+  id: Date.now(),
+  parentId: parentId,
+  name: itemName.value.trim(),
+  days: Number(duration.value),
+  openedDate: new Date().toISOString().split('T')[0]
+}, loadData);
 
     itemName.value = '';
     duration.value = '';
