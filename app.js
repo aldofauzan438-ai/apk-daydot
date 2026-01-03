@@ -80,7 +80,7 @@ createApp({
     },
 
     openExpired(id) {
-      location.href = `expired.html?id=${id}`;
+      location.href = `expired_detail.html?id=${id}`;
     }
   },
 
