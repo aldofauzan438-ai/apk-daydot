@@ -1,14 +1,19 @@
 let db;
-const DB_NAME = 'expiredDB';
-const STORE = 'expired';
+const DB_NAME = 'daydotDB';
+const DB_VERSION = 1;
 
 function openDB(callback) {
-  const request = indexedDB.open(DB_NAME, 1);
+  const request = indexedDB.open(DB_NAME, DB_VERSION);
 
   request.onupgradeneeded = e => {
     db = e.target.result;
-    if (!db.objectStoreNames.contains(STORE)) {
-      db.createObjectStore(STORE, { keyPath: 'id' });
+
+    if (!db.objectStoreNames.contains('templates')) {
+      db.createObjectStore('templates', { keyPath: 'id' });
+    }
+
+    if (!db.objectStoreNames.contains('expired')) {
+      db.createObjectStore('expired', { keyPath: 'id' });
     }
   };
 
@@ -18,32 +23,26 @@ function openDB(callback) {
   };
 
   request.onerror = () => {
-    alert('Gagal membuka database');
+    alert('Gagal membuka IndexedDB');
   };
 }
 
-function getAllTemplates(cb) {
-  const tx = db.transaction(STORE, 'readonly');
-  const store = tx.objectStore(STORE);
+/* GENERIC HELPERS */
+function getAll(storeName, cb) {
+  const tx = db.transaction(storeName, 'readonly');
+  const store = tx.objectStore(storeName);
   const req = store.getAll();
   req.onsuccess = () => cb(req.result || []);
 }
 
-function getTemplateById(id, cb) {
-  const tx = db.transaction(STORE, 'readonly');
-  const store = tx.objectStore(STORE);
-  const req = store.get(id);
-  req.onsuccess = () => cb(req.result);
-}
-
-function saveTemplate(data, cb) {
-  const tx = db.transaction(STORE, 'readwrite');
-  tx.objectStore(STORE).put(data);
+function addData(storeName, data, cb) {
+  const tx = db.transaction(storeName, 'readwrite');
+  tx.objectStore(storeName).put(data);
   tx.oncomplete = () => cb && cb();
 }
 
-function deleteTemplate(id, cb) {
-  const tx = db.transaction(STORE, 'readwrite');
-  tx.objectStore(STORE).delete(id);
+function deleteData(storeName, id, cb) {
+  const tx = db.transaction(storeName, 'readwrite');
+  tx.objectStore(storeName).delete(id);
   tx.oncomplete = () => cb && cb();
 }

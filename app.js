@@ -5,79 +5,88 @@ createApp({
     return {
       newTemplate: '',
       newExpired: '',
-      templates: JSON.parse(localStorage.getItem('templates')) || [],
-      expired: JSON.parse(localStorage.getItem('expired')) || []
-    }
+      templates: [],
+      expired: []
+    };
   },
 
   methods: {
-    save() {
-      localStorage.setItem('templates', JSON.stringify(this.templates));
-      localStorage.setItem('expired', JSON.stringify(this.expired));
-    },
-
-    go(page) {
-      window.location.href = page;
+    /* LOAD DATA */
+    loadData() {
+      getAll('templates', data => this.templates = data);
+      getAll('expired', data => this.expired = data);
     },
 
     /* TEMPLATE */
     addTemplate() {
       if (!this.newTemplate.trim()) return;
-      this.templates.push({
+
+      addData('templates', {
         id: Date.now(),
         name: this.newTemplate
+      }, () => {
+        this.newTemplate = '';
+        this.loadData();
       });
-      this.newTemplate = '';
-      this.save();
     },
 
     editTemplate(i) {
       const name = prompt('Edit nama template', this.templates[i].name);
-      if (name) {
-        this.templates[i].name = name;
-        this.save();
-      }
+      if (!name) return;
+
+      addData('templates', {
+        ...this.templates[i],
+        name
+      }, this.loadData);
     },
 
     deleteTemplate(i) {
-      if (confirm('Hapus template?')) {
-        this.templates.splice(i,1);
-        this.save();
-      }
+      if (!confirm('Hapus template?')) return;
+
+      deleteData('templates', this.templates[i].id, this.loadData);
     },
 
     openTemplate(id) {
-      window.location.href = `template.html?id=${id}`;
+      location.href = `template.html?id=${id}`;
     },
 
     /* EXPIRED */
     addExpired() {
       if (!this.newExpired.trim()) return;
-      this.expired.push({
+
+      addData('expired', {
         id: Date.now(),
         name: this.newExpired
+      }, () => {
+        this.newExpired = '';
+        this.loadData();
       });
-      this.newExpired = '';
-      this.save();
     },
 
     editExpired(i) {
       const name = prompt('Edit nama expired item', this.expired[i].name);
-      if (name) {
-        this.expired[i].name = name;
-        this.save();
-      }
+      if (!name) return;
+
+      addData('expired', {
+        ...this.expired[i],
+        name
+      }, this.loadData);
     },
 
     deleteExpired(i) {
-      if (confirm('Hapus item?')) {
-        this.expired.splice(i,1);
-        this.save();
-      }
+      if (!confirm('Hapus item?')) return;
+
+      deleteData('expired', this.expired[i].id, this.loadData);
     },
 
     openExpired(id) {
-      window.location.href = `expired.html?id=${id}`;
+      location.href = `expired.html?id=${id}`;
     }
+  },
+
+  mounted() {
+    openDB(() => {
+      this.loadData();
+    });
   }
 }).mount('#app');
