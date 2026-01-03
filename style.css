@@ -241,3 +241,17 @@ footer {
 .expired-actions button {
   flex: 1;
 }
+
+/* ===== SEARCH RESULT CLICK FIX ===== */
+.search-result {
+  position: relative;
+  z-index: 10;
+}
+
+.search-result .expired-card {
+  cursor: pointer;
+}
+
+.search-result .expired-card:active {
+  opacity: 0.6;
+}
