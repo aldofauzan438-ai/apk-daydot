@@ -53,12 +53,31 @@ document.addEventListener('DOMContentLoaded', () => {
   const itemName = document.getElementById('itemName');
   const duration = document.getElementById('duration');
 
-  let data = JSON.parse(localStorage.getItem('expiredData')) || { orders: [] };
+  let data;
 
-  function formatDateShort(dateStr) {
-    const [y,m,d] = dateStr.split('-');
-    return `${d}-${m}-${y.slice(2)}`;
+try {
+  data = JSON.parse(localStorage.getItem('expiredData'));
+} catch (e) {
+  data = null;
+}
+
+if (!data || !data.orders) {
+  data = { orders: [] };
+}
+function saveStorage() {
+  try {
+    localStorage.setItem('expiredData', JSON.stringify(data));
+  } catch (e) {
+    // Safari private mode → ignore
   }
+}
+
+function formatDateShort(dateStr) {
+  if (!dateStr) return '-';
+  const [y,m,d] = dateStr.split('-');
+  return `${d}-${m}-${y.slice(2)}`;
+}
+
 
   function getLiveTime() {
     return new Date().toTimeString().slice(0,5);
@@ -71,24 +90,33 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   window.saveOrder = function () {
-    if (!itemName.value || !duration.value) return alert('Lengkapi data');
+  if (!itemName.value || !duration.value) {
+    alert('Lengkapi data');
+    return;
+  }
 
-    data.orders.push({
-      id: Date.now(),
-      name: itemName.value,
-      days: Number(duration.value),
-      openedDate: new Date().toISOString().split('T')[0]
-    });
+  data.orders.push({
+    id: Date.now(),
+    name: itemName.value,
+    days: Number(duration.value),
+    openedDate: new Date().toISOString().split('T')[0]
+  });
 
-    localStorage.setItem('expiredData', JSON.stringify(data));
-    itemName.value = '';
-    duration.value = '';
-    render();
-  };
+  saveStorage();
+  itemName.value = '';
+  duration.value = '';
+  render();
+};
+
 
   function render() {
     list.innerHTML = '';
 
+    if (data.orders.length === 0) {
+    list.innerHTML = '<p style="opacity:.6">Belum ada item</p>';
+    return;
+    
+    }
     data.orders.forEach(o => {
       const exp = calculateExpired(o.days, o.openedDate);
       list.innerHTML += `
