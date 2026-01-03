@@ -54,11 +54,15 @@ content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable
   let data = expired.find(e => e.id === id);
   if (!data.orders) data.orders = [];
 
-  function calculateExpired(days) {
-    const today = new Date(); // selalu HARI INI
-    const exp = new Date(today);
-    exp.setDate(today.getDate() + days);
-    return exp.toISOString().split('T')[0];
+  function getToday() {
+    const d = new Date();
+    return d.toISOString().split('T')[0]; // YYYY-MM-DD
+  }
+
+  function calculateExpired(days, openedDate) {
+    const d = new Date(openedDate);
+    d.setDate(d.getDate() + days);
+    return d.toISOString().split('T')[0];
   }
 
   function saveOrder() {
@@ -67,11 +71,11 @@ content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable
 
     if (!name || !days) return alert('Lengkapi data');
 
-    data.orders.unshift({
+    data.orders.push({
       id: Date.now(),
-      name,
-      days,
-      expired: calculateExpired(days)
+      name : itemName,
+      days : days,
+      opened: getToday()
     });
 
     localStorage.setItem('expired', JSON.stringify(expired));
@@ -88,13 +92,14 @@ content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable
     div.innerHTML = `
       <div class="order-title">${o.name}</div>
       <div class="order-meta">
-        Masa: ${o.days} hari<br>
-        Expired: ${calculateExpired(o.days)}
+        Opened: ${o.opened}
+        Masa exp: ${o.days} hari<br>
+        Expired: ${calculateExpired(o.days,o.opened)}
       </div>
 
       <div class="order-actions">
-        <span class="action-btn print" onclick="printOne('${o.name}',${o.days})">🖨️</span>
-        <span class="action-btn edit" onclick="editOrder(${o.id})">✏️</span>
+        <span class="action-btn print" onclick="printOne('${o.name}',${o.days},'${o.opened}')">🖨️</span>
+        <span class="action-btn edit" onclick="editOrder('${o.name}',${o.days})">✏️</span>
         <span class="action-btn delete" onclick="deleteOrder(${o.id})">🗑️</span>
       </div>
     `;
@@ -122,14 +127,17 @@ function printAll() {
     render();
   }
 
-  function printOne(name, days) {
-    alert(`PRINT\n${name}\nMasa: ${days} hari\nExpired: ${calculateExpired(days)}`);
+  function printOne(name, days, opened) {
+    alert(`Tomoro Coffee daydot\n${name}\nOpened : ${opened}\nMasa exp : ${days} hari\nExpired: ${calculateExpired(days,opened)}`);
   }
 
   function printAll() {
     let text = 'PRINT SEMUA\\n\\n';
     data.orders.forEach(o => {
-      text += `${o.name} | ${o.days} hari | ${calculateExpired(o.days)}\\n`;
+      text += `${o.name} 
+      Opened : ${o.opened} 
+      Masa exp : ${o.days} hari  
+      Expired : ${calculateExpired(o.days, o.opened)}\\n`;
     });
     alert(text);
   }
