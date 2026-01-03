@@ -1,38 +1,17 @@
 <!DOCTYPE html>
-<html lang="id">
+<html>
 <head>
   <meta charset="UTF-8">
-  <title>Detail Template</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Detail</title>
 </head>
-<body class="container">
-
-<h2>Detail Template</h2>
-
-<div class="input-box">
-  <input id="name" placeholder="Nama Template">
-  <button onclick="save()">Simpan</button>
-</div>
-
+<body>
+<h2>Halaman Detail</h2>
+<p>ID: <span id="id"></span></p>
 <a href="index.html">⬅ Kembali</a>
 
 <script>
   const params = new URLSearchParams(location.search);
-  const id = Number(params.get('id'));
-
-  const templates = JSON.parse(localStorage.getItem('templates')) || [];
-  const template = templates.find(t => t.id === id);
-
-  if (template) {
-    document.getElementById('name').value = template.name;
-  }
-
-  function save() {
-    template.name = document.getElementById('name').value;
-    localStorage.setItem('templates', JSON.stringify(templates));
-    alert('Template tersimpan');
-  }
+  document.getElementById('id').innerText = params.get('id');
 </script>
-
 </body>
 </html>

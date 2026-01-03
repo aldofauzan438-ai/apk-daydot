@@ -1,108 +1,17 @@
 <!DOCTYPE html>
-<html lang="id">
+<html>
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Detail Expired</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Detail</title>
 </head>
-
-<body class="container">
-
-<h2>Detail Expired</h2>
-
-<div class="input-box">
-  <input id="item" placeholder="Nama Item">
-</div>
-
-<div class="input-box">
-  <select id="days">
-    <option value="">Pilih Hari</option>
-    <option value="1">1 Hari</option>
-    <option value="7">7 Hari</option>
-    <option value="14">14 Hari</option>
-    <option value="30">30 Hari</option>
-  </select>
-</div>
-
-<button onclick="save()">Simpan</button>
-
-<hr>
-
-<div id="list"></div>
-
+<body>
+<h2>Halaman Detail</h2>
+<p>ID: <span id="id"></span></p>
 <a href="index.html">⬅ Kembali</a>
 
-<script src="db.js"></script>
 <script>
-let template = null;
-
-document.addEventListener('DOMContentLoaded', () => {
-
-  const list = document.getElementById('list');
-  const item = document.getElementById('item');
-  const days = document.getElementById('days');
-
-  const id = Number(new URLSearchParams(location.search).get('id'));
-
-  openDB(() => {
-    getTemplateById(id, data => {
-      if (!data) {
-        list.innerHTML = '<p>Data tidak ditemukan</p>';
-        return;
-      }
-      template = data;
-      if (!template.orders) template.orders = [];
-      render();
-    });
-  });
-
-  window.save = function () {
-    if (!template) return;
-    if (!item.value || !days.value) {
-      alert('Lengkapi data');
-      return;
-    }
-
-    template.orders.push({
-      id: Date.now(),
-      name: item.value,
-      days: Number(days.value),
-      opened: new Date().toISOString().split('T')[0]
-    });
-
-    saveTemplate(template, render);
-    item.value = '';
-    days.value = '';
-  };
-
-  window.del = function (orderId) {
-    template.orders = template.orders.filter(o => o.id !== orderId);
-    saveTemplate(template, render);
-  };
-
-  function render() {
-    list.innerHTML = '';
-
-    if (template.orders.length === 0) {
-      list.innerHTML = '<p>Belum ada item</p>';
-      return;
-    }
-
-    template.orders.forEach(o => {
-      list.innerHTML += `
-        <div class="order-card">
-          <b>${o.name}</b><br>
-          Opened: ${o.opened}<br>
-          Masa: ${o.days} hari<br><br>
-          <button onclick="del(${o.id})">Hapus</button>
-        </div>
-      `;
-    });
-  }
-
-});
+  const params = new URLSearchParams(location.search);
+  document.getElementById('id').innerText = params.get('id');
 </script>
-
 </body>
 </html>
