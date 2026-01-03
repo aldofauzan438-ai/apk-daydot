@@ -66,6 +66,16 @@ content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable
   const editName = document.getElementById('editName');
   const editDays = document.getElementById('editDays');
 
+  function formatDateShort(dateStr) {
+  if (!dateStr) return '';
+  const [y, m, d] = dateStr.split('-');
+  return `${d}-${m}-${y.slice(2)}`; // 03-01-26
+}
+
+  function getLiveTime() {
+  const d = new Date();
+  return d.toTimeString().slice(0,5); // HH:MM
+}
 
   function getNow() {
   const d = new Date();
@@ -115,33 +125,33 @@ content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable
 }
 
   function render() {
-    list.innerHTML = '';
+  list.innerHTML = '';
 
-    data.orders.forEach(o => {
-      const openedDate = o.openedDate || o.opened || getNow().date;
-      const openedTime = o.openedTime || '00:00';
+  data.orders.forEach(o => {
+    const openedDate = o.openedDate;
+    const exp = calculateExpired(o.days, openedDate);
 
-      const expired = calculateExpired(o.days, openedDate)
+    const div = document.createElement('div');
+    div.className = 'order-card';
+    div.innerHTML = `
+      <div class="order-title">Nama Item : ${o.name}</div>
+      <div class="order-meta">
+        Opened   : ${formatDateShort(openedDate)}<br>
+        Time     : <span class="live-time">${getLiveTime()}</span><br>
+        Masa exp : ${o.days} hari<br>
+        Expired  : ${formatDateShort(exp.date)}
+      </div>
 
-      const div = document.createElement('div');
-      div.className = 'order-card';
-      div.innerHTML = `
-        <div class="order-title">Nama Item : ${o.name}</div>
-        <div class="order-meta">
-          Opened: ${formatDate(openedDate)} (${openedTime})<br>
-          Masa exp: ${o.days} hari<br>
-          Expired: ${formatDate(expired.date)} (${openedTime})
-        </div>
-
-        <div class="order-actions">
-          <button class="action-btn print" onclick="printOne('${o.name}', ${o.days}, '${openedDate}', '${openedTime}')">🖨️</button>
-          <button class="action-btn edit" onclick="editOrder(${o.id})">✏️</button>
-          <button class="action-btn delete" onclick="deleteOrder(${o.id})">🗑️</button>
-        </div>
-      `;
-      list.appendChild(div);
-    });
-  }
+      <div class="order-actions">
+        <button class="action-btn print"
+          onclick="printOne('${o.name}', ${o.days}, '${openedDate}')">🖨️</button>
+        <button class="action-btn edit" onclick="editOrder(${o.id})">✏️</button>
+        <button class="action-btn delete" onclick="deleteOrder(${o.id})">🗑️</button>
+      </div>
+    `;
+    list.appendChild(div);
+  });
+}
 
 function editOrder(orderId) {
   const o = data.orders.find(x => x.id === orderId);
@@ -215,17 +225,19 @@ function editOrder(orderId) {
     render();
   }
 
-  function printOne(name, days, openedDate, openedTime) {
-    const exp = calculateExpired(days, openedDate)
+ function printOne(name, days, openedDate) {
+  const exp = calculateExpired(days, openedDate);
+  const liveTime = getLiveTime(); // ⬅️ JAM SAAT PRINT
 
-    alert(
+  alert(
 `Tomoro Coffee
 Nama Item : ${name}
-Opened : ${formatDate(openedDate)} (${openedTime})
-Masa exp : ${days} hari
-Expired : ${formatDate(exp.date)} (${openedTime})`
-    );
-  }
+Opened    : ${formatDateShort(openedDate)}
+Time      : ${liveTime}
+Masa exp  : ${days} hari
+Expired   : ${formatDateShort(exp.date)}`
+  );
+}
 
   function printAll() {
   let text = 'PRINT SEMUA\n\n';
@@ -240,6 +252,12 @@ Expired : ${formatDate(exp.date)} (${o.openedTime})\n\n`;
 }
 
   render();
+  // update jam setiap 1 menit (hemat baterai)
+setInterval(() => {
+  document.querySelectorAll('.live-time').forEach(el => {
+    el.textContent = getLiveTime();
+  });
+}, 60000);
 </script>
 
 
