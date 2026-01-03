@@ -2,11 +2,12 @@
 <html lang="id">
 <head>
   <meta name="viewport"
-content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta charset="UTF-8">
   <title>Detail Expired Item</title>
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body class="container">
 
 <h2>Detail Expired Item</h2>
@@ -41,39 +42,41 @@ content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable
 
 <h3>Daftar Item</h3>
 
-<div id="print-area">
-  <div id="list"></div>
-</div>
+<div id="list"></div>
+
 <a href="index.html">⬅ Kembali</a>
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function () {
 
-  const params = new URLSearchParams(location.search);
-  const id = Number(params.get('id')); // ⬅️ ID dari halaman sebelumnya
+  const params = new URLSearchParams(window.location.search);
+  const pageId = Number(params.get('id'));
 
   const list = document.getElementById('list');
   const itemName = document.getElementById('itemName');
   const duration = document.getElementById('duration');
 
-  // ✅ AMBIL DATA YANG BENAR
-  let expired = JSON.parse(localStorage.getItem('expired')) || [];
-  let data = expired.find(e => e.id === id);
+  let expired = [];
+  try {
+    expired = JSON.parse(localStorage.getItem('expired')) || [];
+  } catch (e) {
+    expired = [];
+  }
 
+  let data = expired.find(e => e.id === pageId);
   if (!data) {
-    data = { id, orders: [] };
+    data = { id: pageId, orders: [] };
     expired.push(data);
     localStorage.setItem('expired', JSON.stringify(expired));
   }
 
   function formatDateShort(dateStr) {
-    const [y,m,d] = dateStr.split('-');
+    const [y, m, d] = dateStr.split('-');
     return `${d}-${m}-${y.slice(2)}`;
   }
 
   function getLiveTime() {
-    const d = new Date();
-    return d.toLocaleTimeString('id-ID', {
+    return new Date().toLocaleTimeString('id-ID', {
       hour: '2-digit',
       minute: '2-digit'
     });
@@ -85,6 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return d.toISOString().split('T')[0];
   }
 
+  /* ================= SIMPAN ================= */
   window.saveOrder = function () {
     if (!itemName.value || !duration.value) {
       alert('Lengkapi data');
@@ -93,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     data.orders.push({
       id: Date.now(),
-      name: itemName.value,
+      name: itemName.value.trim(),
       days: Number(duration.value),
       openedDate: new Date().toISOString().split('T')[0]
     });
@@ -104,6 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
     render();
   };
 
+  /* ================= RENDER ================= */
   function render() {
     list.innerHTML = '';
 
@@ -114,30 +119,98 @@ document.addEventListener('DOMContentLoaded', () => {
 
     data.orders.forEach(o => {
       const exp = calculateExpired(o.days, o.openedDate);
+
       list.innerHTML += `
         <div class="order-card">
-          <b>Nama Item : ${o.name}</b><br>
-          Opened : ${formatDateShort(o.openedDate)}<br>
-          Time : <span class="live-time">${getLiveTime()}</span><br>
-          Masa exp : ${o.days} hari<br>
-          Expired : ${formatDateShort(exp)}
+          <div class="order-title">Nama Item : ${o.name}</div>
+          <div class="order-meta">
+            Opened : ${formatDateShort(o.openedDate)}<br>
+            Time : <span class="live-time">${getLiveTime()}</span><br>
+            Masa exp : ${o.days} hari<br>
+            Expired : ${formatDateShort(exp)}
+          </div>
+
+          <div class="order-actions">
+            <button onclick="printOne(${o.id})">🖨️</button>
+            <button onclick="editOrder(${o.id})">✏️</button>
+            <button onclick="deleteOrder(${o.id})">🗑️</button>
+          </div>
         </div>
       `;
     });
   }
 
-  // ⏱️ LIVE TIME (Safari aman)
-  setInterval(() => {
-    document.querySelectorAll('.live-time')
-      .forEach(el => el.textContent = getLiveTime());
+  /* ================= PRINT SATUAN ================= */
+  window.printOne = function (orderId) {
+    const o = data.orders.find(x => x.id === orderId);
+    if (!o) return;
+
+    const exp = calculateExpired(o.days, o.openedDate);
+
+    alert(
+`Tomoro Coffee
+Nama Item : ${o.name}
+Opened : ${formatDateShort(o.openedDate)}
+Time : ${getLiveTime()}
+Masa exp : ${o.days} hari
+Expired : ${formatDateShort(exp)}`
+    );
+  };
+
+  /* ================= EDIT ================= */
+  window.editOrder = function (orderId) {
+    const o = data.orders.find(x => x.id === orderId);
+    if (!o) return;
+
+    const newName = prompt('Edit nama item', o.name);
+    if (newName === null) return;
+
+    const newDays = prompt('Edit masa expired (hari)', o.days);
+    if (!newDays || isNaN(newDays)) return;
+
+    o.name = newName.trim();
+    o.days = Number(newDays);
+
+    localStorage.setItem('expired', JSON.stringify(expired));
+    render();
+  };
+
+  /* ================= HAPUS ================= */
+  window.deleteOrder = function (orderId) {
+    if (!confirm('Hapus item ini?')) return;
+
+    data.orders = data.orders.filter(o => o.id !== orderId);
+    localStorage.setItem('expired', JSON.stringify(expired));
+    render();
+  };
+
+  /* ================= PRINT SEMUA ================= */
+  window.printAll = function () {
+    let text = 'PRINT SEMUA\n\n';
+    const now = getLiveTime();
+
+    data.orders.forEach(o => {
+      const exp = calculateExpired(o.days, o.openedDate);
+      text += `${o.name}
+Opened : ${formatDateShort(o.openedDate)}
+Time : ${now}
+Masa exp : ${o.days} hari
+Expired : ${formatDateShort(exp)}\n\n`;
+    });
+
+    alert(text);
+  };
+
+  /* ================= LIVE TIME ================= */
+  setInterval(function () {
+    document.querySelectorAll('.live-time').forEach(el => {
+      el.textContent = getLiveTime();
+    });
   }, 60000);
 
   render();
 });
 </script>
-
-
-
 
 
 </body>
