@@ -49,26 +49,26 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 
-  const params = new URLSearchParams(window.location.search);
-  const pageId = Number(params.get('id'));
 
   const list = document.getElementById('list');
   const itemName = document.getElementById('itemName');
   const duration = document.getElementById('duration');
+  
+let expired;
+try {
+  expired = JSON.parse(localStorage.getItem('expired'));
+} catch (e) {
+  expired = null;
+}
 
-  let expired = [];
-  try {
-    expired = JSON.parse(localStorage.getItem('expired')) || [];
-  } catch (e) {
-    expired = [];
-  }
+if (!expired || !expired.orders) {
+  expired = { orders: [] };
+  localStorage.setItem('expired', JSON.stringify(expired));
+}
 
-  let data = expired.find(e => e.id === pageId);
-  if (!data) {
-    data = { id: pageId, orders: [] };
-    expired.push(data);
-    localStorage.setItem('expired', JSON.stringify(expired));
-  }
+let data = expired;
+
+  
 
   function formatDateShort(dateStr) {
     const [y, m, d] = dateStr.split('-');
