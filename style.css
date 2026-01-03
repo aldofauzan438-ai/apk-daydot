@@ -237,3 +237,7 @@ footer {
 #searchItem {
   background: #fff;
 }
+
+.expired-actions button {
+  flex: 1;
+}

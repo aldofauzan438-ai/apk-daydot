@@ -1,6 +1,6 @@
 let db;
 const DB_NAME = 'daydotDB';
-const DB_VERSION = 5;
+const DB_VERSION = 6;
 ;
 
 function openDB(callback) {
@@ -11,6 +11,9 @@ function openDB(callback) {
 
     if (!db.objectStoreNames.contains('templates')) {
       db.createObjectStore('templates', { keyPath: 'id' });
+    }
+    if (!db.objectStoreNames.contains('template_items')) {
+      db.createObjectStore('template_items', { keyPath: 'id' });
     }
 
     if (!db.objectStoreNames.contains('expired')) {

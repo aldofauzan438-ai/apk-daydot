@@ -1,17 +1,192 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Detail</title>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Template</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-<body>
-<h2>Halaman Detail</h2>
-<p>ID: <span id="id"></span></p>
-<a href="index.html">⬅ Kembali</a>
 
+<body class="container">
+
+<h2>Template</h2>
+
+<!-- SEARCH EXPIRED -->
+<div class="expired-form">
+  <div class="input-box">
+    <input id="searchExpired" placeholder="Cari expired item...">
+  </div>
+</div>
+
+<!-- HASIL SEARCH -->
+<div id="searchResult"></div>
+
+<hr>
+
+<h3>Item Dalam Template</h3>
+<div id="list"></div>
+
+<div class="print-all">
+  <span onclick="printAll()">🖨️ Print Semua</span>
+</div>
+
+<a class="back" href="index.html">⬅ Kembali</a>
+
+<script src="db.js"></script>
 <script>
-  const params = new URLSearchParams(location.search);
-  document.getElementById('id').innerText = params.get('id');
+const templateId = Number(new URLSearchParams(location.search).get('id'));
+
+const searchInput = document.getElementById('searchExpired');
+const searchResult = document.getElementById('searchResult');
+const list = document.getElementById('list');
+
+let allExpired = [];
+let templateItems = [];
+
+/* =====================
+   DATE & TIME
+===================== */
+function formatDate(d) {
+  return new Date(d).toLocaleDateString('id-ID');
+}
+
+function liveTime() {
+  return new Date().toLocaleTimeString('id-ID', {
+    hour:'2-digit', minute:'2-digit', second:'2-digit'
+  });
+}
+
+function calcExpired(days, iso) {
+  const d = new Date(iso);
+  d.setDate(d.getDate() + days);
+  return d.toLocaleDateString('id-ID');
+}
+
+/* =====================
+   LOAD
+===================== */
+openDB(() => {
+  getAll('expired_items', d => allExpired = d || []);
+  loadTemplateItems();
+});
+
+function loadTemplateItems() {
+  getAll('template_items', d => {
+    templateItems = (d || []).filter(x => x.templateId === templateId);
+    render();
+  });
+}
+
+/* =====================
+   SEARCH
+===================== */
+searchInput.addEventListener('input', () => {
+  const q = searchInput.value.toLowerCase();
+  searchResult.innerHTML = '';
+
+  if (!q) return;
+
+  allExpired
+    .filter(x => x.name.toLowerCase().includes(q))
+    .slice(0, 5)
+    .forEach(x => {
+      const div = document.createElement('div');
+      div.className = 'expired-card clickable';
+      div.innerHTML = `<b>${x.name}</b>`;
+      div.onclick = () => addToTemplate(x);
+      searchResult.appendChild(div);
+    });
+});
+
+/* =====================
+   ADD TO TEMPLATE
+===================== */
+function addToTemplate(o) {
+  addData('template_items', {
+    id: Date.now(),
+    templateId,
+    expiredItemId: o.id,
+    name: o.name,
+    days: o.days,
+    openedAt: o.openedAt
+  }, loadTemplateItems);
+
+  searchInput.value = '';
+  searchResult.innerHTML = '';
+}
+
+/* =====================
+   PRINT
+===================== */
+function printOne(id) {
+  const o = templateItems.find(x => x.id === id);
+  if (!o) return;
+
+  alert(
+`Tomoro Coffee
+${o.name}
+Opened : ${formatDate(o.openedAt)}
+Time : ${liveTime()}
+Masa exp : ${o.days} hari
+Expired : ${calcExpired(o.days, o.openedAt)}`
+  );
+}
+
+function printAll() {
+  let t = 'PRINT TEMPLATE\n\n';
+  templateItems.forEach(o => {
+    t += `${o.name}
+Opened : ${formatDate(o.openedAt)}
+Time : ${liveTime()}
+Masa exp : ${o.days} hari
+Expired : ${calcExpired(o.days, o.openedAt)}\n\n`;
+  });
+  alert(t);
+}
+
+/* =====================
+   RENDER
+===================== */
+function render() {
+  list.innerHTML = '';
+  if (templateItems.length === 0) {
+    list.innerHTML = '<p class="empty">Belum ada item</p>';
+    return;
+  }
+
+  templateItems.forEach(o => {
+    list.innerHTML += `
+      <div class="expired-card">
+        <div class="expired-title">${o.name}</div>
+        <div class="expired-meta">
+          Opened : ${formatDate(o.openedAt)}<br>
+          Time : <span class="live-time"></span><br>
+          Masa exp : ${o.days} hari<br>
+          Expired : ${calcExpired(o.days, o.openedAt)}
+        </div>
+        <div class="expired-actions">
+          <button onclick="printOne(${o.id})">🖨️</button>
+          <button onclick="deleteTemplateItem(${o.id})">🗑️</button>
+        </div>
+      </div>
+    `;
+  });
+
+  updateTime();
+}
+
+function deleteTemplateItem(id) {
+  if (!confirm('Hapus item ini dari template?')) return;
+  deleteData('template_items', id, loadTemplateItems);
+}
+
+function updateTime() {
+  document.querySelectorAll('.live-time')
+    .forEach(e => e.textContent = liveTime());
+}
+setInterval(updateTime, 1000);
 </script>
+
 </body>
 </html>
