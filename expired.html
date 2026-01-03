@@ -49,16 +49,16 @@ content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable
 <script>
 document.addEventListener('DOMContentLoaded', () => {
 
-  const params = new URLSearchParams(location.search);
-  const id = Number(params.get('id'));
+  const id = Number(new URLSearchParams(location.search).get('id')) || 1;
 
-  let expired = JSON.parse(localStorage.getItem('expired')) || [];
-  let data = expired.find(e => e.id === id);
+let expired = JSON.parse(localStorage.getItem('expired')) || [];
+let data = expired.find(e => e.id === id);
 
-  if (!data) {
-    data = { id, orders: [] };
-    expired.push(data);
-  }
+if (!data) {
+  data = { id, orders: [] };
+  expired.push(data);
+}
+
 
   const list = document.getElementById('list');
   const itemName = document.getElementById('itemName');
