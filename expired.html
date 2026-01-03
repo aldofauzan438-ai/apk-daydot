@@ -88,28 +88,29 @@ document.addEventListener('DOMContentLoaded', () => {
     return { date: d.toISOString().split('T')[0] };
   }
 
-  function saveOrder() {
-    const name = itemName.value.trim();
-    const days = Number(duration.value);
-    const now = getNow();
+  window.saveOrder = function() {
+  const name = itemName.value.trim();
+  const days = Number(duration.value);
+  const now = getNow();
 
-    if (!name || !days) {
-      alert('Lengkapi data');
-      return;
-    }
-
-    data.orders.push({
-      id: Date.now(),
-      name,
-      days,
-      openedDate: now.date
-    });
-
-    localStorage.setItem('expired', JSON.stringify(expired));
-    itemName.value = '';
-    duration.value = '';
-    render();
+  if (!name || !days) {
+    alert('Lengkapi data');
+    return;
   }
+
+  data.orders.push({
+    id: Date.now(),
+    name,
+    days,
+    openedDate: now.date
+  });
+
+  localStorage.setItem('expired', JSON.stringify(expired));
+  itemName.value = '';
+  duration.value = '';
+  render();
+};
+
 
   function render() {
     list.innerHTML = '';
@@ -138,29 +139,30 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  function editOrder(id) {
-    const o = data.orders.find(x => x.id === id);
-    if (!o) return;
+  window.editOrder = function(id) {
+  const o = data.orders.find(x => x.id === id);
+  if (!o) return;
 
-    const newName = prompt('Edit nama item', o.name);
-    if (newName === null) return;
+  const newName = prompt('Edit nama item', o.name);
+  if (newName === null) return;
 
-    const newDays = prompt('Edit masa expired (hari)', o.days);
-    if (!newDays) return;
+  const newDays = prompt('Edit masa expired (hari)', o.days);
+  if (!newDays) return;
 
-    o.name = newName.trim();
-    o.days = Number(newDays);
+  o.name = newName.trim();
+  o.days = Number(newDays);
 
-    localStorage.setItem('expired', JSON.stringify(expired));
-    render();
-  }
+  localStorage.setItem('expired', JSON.stringify(expired));
+  render();
+};
 
-  function deleteOrder(id) {
-    if (!confirm('Hapus item ini?')) return;
-    data.orders = data.orders.filter(o => o.id !== id);
-    localStorage.setItem('expired', JSON.stringify(expired));
-    render();
-  }
+  window.deleteOrder = function(id) {
+  if (!confirm('Hapus item ini?')) return;
+  data.orders = data.orders.filter(o => o.id !== id);
+  localStorage.setItem('expired', JSON.stringify(expired));
+  render();
+};
+
 
   window.printOne = function(name, days, openedDate) {
     const exp = calculateExpired(days, openedDate);
