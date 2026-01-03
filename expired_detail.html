@@ -53,20 +53,31 @@ const list = document.getElementById('list');
 const itemName = document.getElementById('itemName');
 const duration = document.getElementById('duration');
 
-/* ===== DATE & TIME ===== */
-function formatDateTime(iso) {
+/* =====================
+   DATE & TIME UTIL
+===================== */
+function formatDate(iso) {
   const d = new Date(iso);
-  return d.toLocaleDateString('id-ID') + ' (' +
-         d.toLocaleTimeString('id-ID', { hour:'2-digit', minute:'2-digit' }) + ')';
+  return d.toLocaleDateString('id-ID');
 }
 
-function calcExpired(days, iso) {
+function liveTime() {
+  return new Date().toLocaleTimeString('id-ID', {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+  });
+}
+
+function calcExpiredDate(days, iso) {
   const d = new Date(iso);
   d.setDate(d.getDate() + days);
-  return formatDateTime(d.toISOString());
+  return d.toLocaleDateString('id-ID');
 }
 
-/* ===== DB ===== */
+/* =====================
+   DB LOAD
+===================== */
 openDB(loadData);
 
 function loadData() {
@@ -76,7 +87,9 @@ function loadData() {
   });
 }
 
-/* ===== CRUD ===== */
+/* =====================
+   CRUD
+===================== */
 window.saveItem = function () {
   if (!itemName.value || !duration.value) {
     alert('Lengkapi data');
@@ -115,6 +128,9 @@ window.deleteItem = function (id) {
   deleteData('expired_items', id, loadData);
 };
 
+/* =====================
+   PRINT
+===================== */
 window.printOne = function (id) {
   const o = expiredData.find(x => x.id === id);
   if (!o) return;
@@ -122,9 +138,10 @@ window.printOne = function (id) {
   alert(
 `Tomoro Coffee
 ${o.name}
-Opened : ${formatDateTime(o.openedAt)}
-Masa exp : ${o.days} hari
-Expired : ${calcExpired(o.days, o.openedAt)}`
+Opened  : ${formatDate(o.openedAt)}
+Time    : ${liveTime()}
+Masa exp: ${o.days} hari
+Expired : ${calcExpiredDate(o.days, o.openedAt)}`
   );
 };
 
@@ -132,14 +149,17 @@ window.printAll = function () {
   let t = 'PRINT SEMUA\n\n';
   expiredData.forEach(o => {
     t += `${o.name}
-Opened : ${formatDateTime(o.openedAt)}
-Masa exp : ${o.days} hari
-Expired : ${calcExpired(o.days, o.openedAt)}\n\n`;
+Opened  : ${formatDate(o.openedAt)}
+Time    : ${liveTime()}
+Masa exp: ${o.days} hari
+Expired : ${calcExpiredDate(o.days, o.openedAt)}\n\n`;
   });
   alert(t);
 };
 
-/* ===== RENDER ===== */
+/* =====================
+   RENDER
+===================== */
 function render() {
   list.innerHTML = '';
   if (expiredData.length === 0) {
@@ -155,9 +175,10 @@ function render() {
         </div>
 
         <div class="expired-meta">
-          Opened: ${formatDateTime(o.openedAt)}<br>
-          Masa exp: ${o.days} hari<br>
-          Expired: ${calcExpired(o.days, o.openedAt)}
+          Opened : ${formatDate(o.openedAt)}<br>
+          Time : <span class="live-time"></span><br>
+          Masa exp : ${o.days} hari<br>
+          Expired : ${calcExpiredDate(o.days, o.openedAt)}
         </div>
 
         <div class="expired-actions">
@@ -168,7 +189,19 @@ function render() {
       </div>
     `;
   });
+
+  updateLiveTime();
 }
+
+/* =====================
+   LIVE CLOCK (DETIK)
+===================== */
+function updateLiveTime() {
+  document.querySelectorAll('.live-time')
+    .forEach(el => el.textContent = liveTime());
+}
+
+setInterval(updateLiveTime, 1000);
 </script>
 
 </body>
