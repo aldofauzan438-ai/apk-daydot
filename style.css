@@ -233,3 +233,7 @@ footer {
 .expired-form button.primary {
   width: 100%;
 }
+
+#searchItem {
+  background: #fff;
+}

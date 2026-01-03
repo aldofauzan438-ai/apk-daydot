@@ -40,6 +40,13 @@
 </div>
 
 <h3>Daftar Item</h3>
+<div class="input-box">
+  <input
+    id="searchItem"
+    placeholder="Cari nama item..."
+    oninput="filterItems()"
+  >
+</div>
 <div id="list"></div>
 
 <a class="back" href="index.html">⬅ Kembali</a>
@@ -47,6 +54,8 @@
 <script src="db.js"></script>
 <script>
 const parentId = Number(new URLSearchParams(location.search).get('id'));
+const searchInput = document.getElementById('searchItem');
+let filteredData = [];
 let expiredData = [];
 
 const list = document.getElementById('list');
@@ -83,9 +92,23 @@ openDB(loadData);
 function loadData() {
   getAll('expired_items', data => {
     expiredData = (data || []).filter(x => x.parentId === parentId);
-    render();
+filteredData = expiredData;
+render();
   });
 }
+window.filterItems = function () {
+  const q = searchInput.value.toLowerCase().trim();
+
+  if (!q) {
+    filteredData = expiredData;
+  } else {
+    filteredData = expiredData.filter(o =>
+      o.name.toLowerCase().includes(q)
+    );
+  }
+
+  render();
+};
 
 /* =====================
    CRUD
@@ -162,12 +185,12 @@ Expired : ${calcExpiredDate(o.days, o.openedAt)}\n\n`;
 ===================== */
 function render() {
   list.innerHTML = '';
-  if (expiredData.length === 0) {
-    list.innerHTML = '<p class="empty">Belum ada item</p>';
-    return;
-  }
+ if (filteredData.length === 0) {
+  list.innerHTML = '<p class="empty">Item tidak ditemukan</p>';
+  return;
+}
 
-  expiredData.forEach(o => {
+  filteredData.forEach(o => {
     list.innerHTML += `
       <div class="expired-card">
         <div class="expired-title">
