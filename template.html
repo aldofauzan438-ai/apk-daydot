@@ -71,9 +71,19 @@ openDB(() => {
 });
 
 function loadTemplateItems() {
-  getAll('template_items', d => {
-    templateItems = (d || []).filter(x => x.templateId === templateId);
-    render();
+  getAll('template_items', templateItems => {
+    getAll('expired_items', expiredItems => {
+
+      const related = templateItems
+        .filter(t => t.templateId === templateId)
+        .map(t => {
+          const exp = expiredItems.find(e => e.id === t.expiredId);
+          return exp ? { ...exp, templateItemId: t.id } : null;
+        })
+        .filter(Boolean);
+
+      renderTemplateItems(related);
+    });
   });
 }
 
@@ -105,10 +115,7 @@ function addToTemplate(o) {
   addData('template_items', {
     id: Date.now(),
     templateId,
-    expiredItemId: o.id,
-    name: o.name,
-    days: o.days,
-    openedAt: o.openedAt
+    expiredId: expired.id
   }, loadTemplateItems);
 
   searchInput.value = '';
@@ -147,37 +154,38 @@ Expired : ${calcExpired(o.days, o.openedAt)}\n\n`;
 /* =====================
    RENDER
 ===================== */
-function render() {
+function renderTemplateItems(items) {
   list.innerHTML = '';
-  if (templateItems.length === 0) {
+
+  if (!items.length) {
     list.innerHTML = '<p class="empty">Belum ada item</p>';
     return;
   }
 
-  templateItems.forEach(o => {
+  items.forEach(o => {
     list.innerHTML += `
       <div class="expired-card">
         <div class="expired-title">${o.name}</div>
+
         <div class="expired-meta">
           Opened : ${formatDate(o.openedAt)}<br>
-          Time : <span class="live-time"></span><br>
+          Time : ${formatTime(o.openedAt)}<br>
           Masa exp : ${o.days} hari<br>
           Expired : ${calcExpired(o.days, o.openedAt)}
         </div>
+
         <div class="expired-actions">
           <button onclick="printOne(${o.id})">🖨️</button>
-          <button onclick="deleteTemplateItem(${o.id})">🗑️</button>
+          <button onclick="removeFromTemplate(${o.templateItemId})">🗑️</button>
         </div>
       </div>
     `;
   });
-
-  updateTime();
 }
 
-function deleteTemplateItem(id) {
-  if (!confirm('Hapus item ini dari template?')) return;
-  deleteData('template_items', id, loadTemplateItems);
+function removeFromTemplate(templateItemId) {
+  if (!confirm('Hapus item dari template?')) return;
+  deleteData('template_items', templateItemId, loadTemplateItems);
 }
 
 function updateTime() {
