@@ -12,7 +12,7 @@
 
 <h2>Detail Expired Item</h2>
 
-<!-- FORM INPUT -->
+<!-- ================= FORM INPUT ================= -->
 <div class="input-box">
   <input id="itemName" placeholder="Nama Item">
 </div>
@@ -64,6 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
+  /* ================= UTIL ================= */
   function formatDateShort(d) {
     const [y,m,da] = d.split('-');
     return `${da}-${m}-${y.slice(2)}`;
@@ -82,6 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return d.toISOString().split('T')[0];
   }
 
+  /* ================= LOAD DATA ================= */
   openDB(() => {
     getTemplateById(templateId, data => {
 
@@ -90,7 +92,9 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      /* ===== SIMPAN ===== */
+      if (!data.orders) data.orders = [];
+
+      /* ================= SIMPAN ================= */
       window.saveOrder = function () {
         if (!itemName.value || !duration.value) {
           alert('Lengkapi data');
@@ -109,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
         duration.value = '';
       };
 
-      /* ===== PRINT SEMUA ===== */
+      /* ================= PRINT SEMUA ================= */
       window.printAll = function () {
         let text = 'PRINT SEMUA\n\n';
         data.orders.forEach(o => {
@@ -122,7 +126,7 @@ Expired : ${formatDateShort(calcExpired(o.days, o.openedDate))}\n\n`;
         alert(text);
       };
 
-      /* ===== PRINT SATU ===== */
+      /* ================= PRINT SATU ================= */
       window.printOne = function (id) {
         const o = data.orders.find(x => x.id === id);
         if (!o) return;
@@ -137,30 +141,30 @@ Expired : ${formatDateShort(calcExpired(o.days, o.openedDate))}`
         );
       };
 
-      /* ===== EDIT ===== */
+      /* ================= EDIT ================= */
       window.editOrder = function (id) {
         const o = data.orders.find(x => x.id === id);
         if (!o) return;
 
-        const n = prompt('Nama Item', o.name);
-        if (n === null) return;
+        const newName = prompt('Nama Item', o.name);
+        if (newName === null) return;
 
-        const d = prompt('Masa Expired (hari)', o.days);
-        if (!d || isNaN(d)) return;
+        const newDays = prompt('Masa Expired (hari)', o.days);
+        if (!newDays || isNaN(newDays)) return;
 
-        o.name = n.trim();
-        o.days = Number(d);
+        o.name = newName.trim();
+        o.days = Number(newDays);
         saveTemplate(data, render);
       };
 
-      /* ===== HAPUS ===== */
+      /* ================= HAPUS ================= */
       window.deleteOrder = function (id) {
         if (!confirm('Hapus item ini?')) return;
         data.orders = data.orders.filter(o => o.id !== id);
         saveTemplate(data, render);
       };
 
-      /* ===== RENDER ===== */
+      /* ================= RENDER ================= */
       function render() {
         list.innerHTML = '';
 
@@ -172,13 +176,16 @@ Expired : ${formatDateShort(calcExpired(o.days, o.openedDate))}`
         data.orders.forEach(o => {
           list.innerHTML += `
             <div class="order-card">
-              <b>${o.name}</b><br>
-              Opened : ${formatDateShort(o.openedDate)}<br>
-              Time : <span class="live-time">${getLiveTime()}</span><br>
-              Masa exp : ${o.days} hari<br>
-              Expired : ${formatDateShort(calcExpired(o.days, o.openedDate))}
+              <div class="order-title">${o.name}</div>
 
-              <div style="margin-top:8px">
+              <div class="order-meta">
+                Opened : ${formatDateShort(o.openedDate)}<br>
+                Time : <span class="live-time">${getLiveTime()}</span><br>
+                Masa exp : ${o.days} hari<br>
+                Expired : ${formatDateShort(calcExpired(o.days, o.openedDate))}
+              </div>
+
+              <div class="order-actions">
                 <button onclick="printOne(${o.id})">🖨️</button>
                 <button onclick="editOrder(${o.id})">✏️</button>
                 <button onclick="deleteOrder(${o.id})">🗑️</button>
@@ -188,6 +195,7 @@ Expired : ${formatDateShort(calcExpired(o.days, o.openedDate))}`
         });
       }
 
+      /* ================= LIVE TIME ================= */
       setInterval(() => {
         document.querySelectorAll('.live-time')
           .forEach(el => el.textContent = getLiveTime());

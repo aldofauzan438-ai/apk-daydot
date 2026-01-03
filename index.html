@@ -1,91 +1,80 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Daydot Dashboard</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard Expired</title>
   <link rel="stylesheet" href="style.css">
-  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 </head>
-<body>
+<body class="container">
 
-<div id="app" class="container">
-  <h2 class="title">Tomoro Coffee</h2>
+<h2>Dashboard Expired</h2>
 
-  <!-- TEMPLATE -->
-  <section>
-    <h3>Template Dibuat</h3>
-
-    <div class="input-box">
-      <input v-model="newTemplate" placeholder="Nama template baru">
-      <button @click="addTemplate">Tambah</button>
-    </div>
-
-    <div class="grid">
-      <div class="item clickable"
-           v-for="(t,i) in templates"
-           :key="t.id"
-           @click="openTemplate(t.id)">
-        <span>{{ t.name }}</span>
-        <div class="actions">
-          <svg class="icon" @click.stop="editTemplate(i)" viewBox="0 0 24 24">
-            <path d="M3 17.25V21h3.75L17.8 9.94l-3.75-3.75L3 17.25z"/>
-          </svg>
-          <svg class="icon delete" @click.stop="deleteTemplate(i)" viewBox="0 0 24 24">
-            <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6z"/>
-          </svg>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- EXPIRED -->
-  <section>
-    <h3>Daftar Expired Item</h3>
-
-    <div class="input-box">
-      <input v-model="newExpired" placeholder="Nama expired item">
-      <button @click="addExpired">Tambah</button>
-    </div>
-
-    <div class="grid">
-      <div class="item clickable"
-           v-for="(e,i) in expired"
-           :key="e.id"
-           @click="openExpired(e.id)">
-        <!-- <span>{{ e.name }}</span> -->
-         <div>
-          <strong>{{ e.name }}</strong><br>
-          <small v-if="e.date">Expired: {{ e.date }}</small>
-        </div>
-        <div class="actions">
-          <svg class="icon" @click.stop="editExpired(i)" viewBox="0 0 24 24">
-            <path d="M3 17.25V21h3.75L17.8 9.94l-3.75-3.75L3 17.25z"/>
-          </svg>
-          <svg class="icon delete" @click.stop="deleteExpired(i)" viewBox="0 0 24 24">
-            <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6z"/>
-          </svg>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <footer>By : Aldo Fauzan Adhim</footer>
+<div class="input-box">
+  <input id="name" placeholder="Nama Kategori (ex: All Syrup)">
 </div>
+<button onclick="add()">Tambah</button>
 
-<script src="app.js"></script>
+<hr>
+
+<div id="list"></div>
+
 <script src="db.js"></script>
 <script>
-openDB(() => {
-  getAllTemplates(data => {
-    if (data.length === 0) {
-      // DEFAULT DATA (WAJIB)
-      saveTemplate({ id: 1, name: 'Daydot Harian', orders: [] });
-      saveTemplate({ id: 2, name: 'Daydot Bulanan', orders: [] });
-    }
+document.addEventListener('DOMContentLoaded', () => {
+  const list = document.getElementById('list');
+  const name = document.getElementById('name');
+
+  openDB(() => {
+    seed();
+    render();
   });
+
+  function seed() {
+    getAllTemplates(data => {
+      if (data.length === 0) {
+        saveTemplate({ id: Date.now(), name: 'All Syrup', orders: [] });
+        saveTemplate({ id: Date.now()+1, name: 'Food', orders: [] });
+      }
+    });
+  }
+
+  window.add = function () {
+    if (!name.value.trim()) return alert('Isi nama');
+    saveTemplate({
+      id: Date.now(),
+      name: name.value.trim(),
+      orders: []
+    }, () => {
+      name.value = '';
+      render();
+    });
+  };
+
+  window.del = function (id) {
+    if (!confirm('Hapus kategori?')) return;
+    deleteTemplate(id, render);
+  };
+
+  function render() {
+    list.innerHTML = '';
+    getAllTemplates(data => {
+      data.forEach(t => {
+        list.innerHTML += `
+          <div class="order-card">
+            <b>${t.name}</b><br>
+            Total item: ${t.orders.length}<br>
+            <button onclick="location.href='expired.html?id=${t.id}'">Buka</button>
+            <button onclick="del(${t.id})">Hapus</button>
+          </div>
+        `;
+      });
+    });
+  }
 });
 </script>
 
 </body>
 </html>
+
+ 

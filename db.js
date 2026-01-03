@@ -1,49 +1,47 @@
 let db;
-
 const DB_NAME = 'expiredDB';
-const DB_VERSION = 1;
-const STORE_NAME = 'templates';
+const STORE = 'expired';
 
 function openDB(callback) {
-  const request = indexedDB.open(DB_NAME, DB_VERSION);
+  const req = indexedDB.open(DB_NAME, 1);
 
-  request.onupgradeneeded = e => {
+  req.onupgradeneeded = e => {
     db = e.target.result;
-    if (!db.objectStoreNames.contains(STORE_NAME)) {
-      db.createObjectStore(STORE_NAME, { keyPath: 'id' });
+    if (!db.objectStoreNames.contains(STORE)) {
+      db.createObjectStore(STORE, { keyPath: 'id' });
     }
   };
 
-  request.onsuccess = e => {
+  req.onsuccess = e => {
     db = e.target.result;
     callback && callback();
   };
 
-  request.onerror = () => {
-    alert('IndexedDB error');
-  };
+  req.onerror = () => alert('IndexedDB gagal dibuka');
 }
 
 function getAllTemplates(cb) {
-  const tx = db.transaction(STORE_NAME, 'readonly');
-  const req = tx.objectStore(STORE_NAME).getAll();
+  const tx = db.transaction(STORE, 'readonly');
+  const store = tx.objectStore(STORE);
+  const req = store.getAll();
   req.onsuccess = () => cb(req.result || []);
 }
 
 function getTemplateById(id, cb) {
-  const tx = db.transaction(STORE_NAME, 'readonly');
-  const req = tx.objectStore(STORE_NAME).get(id);
+  const tx = db.transaction(STORE, 'readonly');
+  const store = tx.objectStore(STORE);
+  const req = store.get(id);
   req.onsuccess = () => cb(req.result);
 }
 
 function saveTemplate(data, cb) {
-  const tx = db.transaction(STORE_NAME, 'readwrite');
-  tx.objectStore(STORE_NAME).put(data);
+  const tx = db.transaction(STORE, 'readwrite');
+  tx.objectStore(STORE).put(data);
   tx.oncomplete = () => cb && cb();
 }
 
 function deleteTemplate(id, cb) {
-  const tx = db.transaction(STORE_NAME, 'readwrite');
-  tx.objectStore(STORE_NAME).delete(id);
+  const tx = db.transaction(STORE, 'readwrite');
+  tx.objectStore(STORE).delete(id);
   tx.oncomplete = () => cb && cb();
 }
