@@ -11,19 +11,31 @@ createApp({
   },
 
   methods: {
-    /* LOAD DATA */
+    /* =====================
+       LOAD DATA (FIX BOCAH)
+    ===================== */
     loadData() {
-      getAll('templates', data => this.templates = data);
-      getAll('expired', data => this.expired = data);
+      // TEMPLATE NORMAL
+      getAll('templates', data => {
+        this.templates = data || [];
+      });
+
+      // EXPIRED DASHBOARD
+      // ⛔ HANYA yang TIDAK punya parentId
+      getAll('expired', data => {
+        this.expired = (data || []).filter(x => !x.parentId);
+      });
     },
 
-    /* TEMPLATE */
+    /* =====================
+       TEMPLATE
+    ===================== */
     addTemplate() {
       if (!this.newTemplate.trim()) return;
 
       addData('templates', {
         id: Date.now(),
-        name: this.newTemplate
+        name: this.newTemplate.trim()
       }, () => {
         this.newTemplate = '';
         this.loadData();
@@ -36,13 +48,12 @@ createApp({
 
       addData('templates', {
         ...this.templates[i],
-        name
+        name: name.trim()
       }, this.loadData);
     },
 
     deleteTemplate(i) {
       if (!confirm('Hapus template?')) return;
-
       deleteData('templates', this.templates[i].id, this.loadData);
     },
 
@@ -50,13 +61,16 @@ createApp({
       location.href = `template.html?id=${id}`;
     },
 
-    /* EXPIRED */
+    /* =====================
+       EXPIRED (PARENT ONLY)
+    ===================== */
     addExpired() {
       if (!this.newExpired.trim()) return;
 
       addData('expired', {
         id: Date.now(),
-        name: this.newExpired
+        name: this.newExpired.trim()
+        // ⛔ JANGAN parentId di sini
       }, () => {
         this.newExpired = '';
         this.loadData();
@@ -69,13 +83,12 @@ createApp({
 
       addData('expired', {
         ...this.expired[i],
-        name
+        name: name.trim()
       }, this.loadData);
     },
 
     deleteExpired(i) {
       if (!confirm('Hapus item?')) return;
-
       deleteData('expired', this.expired[i].id, this.loadData);
     },
 

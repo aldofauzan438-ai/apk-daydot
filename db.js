@@ -1,6 +1,6 @@
 let db;
 const DB_NAME = 'daydotDB';
-const DB_VERSION = 3;
+const DB_VERSION = 5;
 ;
 
 function openDB(callback) {
