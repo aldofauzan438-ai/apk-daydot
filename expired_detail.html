@@ -13,7 +13,6 @@
 <h2>Detail Expired Item</h2>
 
 <div class="card">
-
   <div class="input-box">
     <input id="itemName" placeholder="Nama Item">
   </div>
@@ -47,140 +46,129 @@
 
 <script src="db.js"></script>
 <script>
-const parentId = Number(
-  new URLSearchParams(location.search).get('id')
-);
+const parentId = Number(new URLSearchParams(location.search).get('id'));
 let expiredData = [];
 
-document.addEventListener('DOMContentLoaded', () => {
+const list = document.getElementById('list');
+const itemName = document.getElementById('itemName');
+const duration = document.getElementById('duration');
 
-  const list = document.getElementById('list');
-  const itemName = document.getElementById('itemName');
-  const duration = document.getElementById('duration');
+/* ===== DATE & TIME ===== */
+function formatDateTime(iso) {
+  const d = new Date(iso);
+  return d.toLocaleDateString('id-ID') + ' (' +
+         d.toLocaleTimeString('id-ID', { hour:'2-digit', minute:'2-digit' }) + ')';
+}
 
-  function nowTime() {
-    return new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
-  }
+function calcExpired(days, iso) {
+  const d = new Date(iso);
+  d.setDate(d.getDate() + days);
+  return formatDateTime(d.toISOString());
+}
 
-  function formatDate(d) {
-    const [y,m,da] = d.split('-');
-    return `${da}-${m}-${y.slice(2)}`;
-  }
+/* ===== DB ===== */
+openDB(loadData);
 
-  function calcExpired(days, date) {
-    const d = new Date(date);
-    d.setDate(d.getDate() + days);
-    return d.toISOString().split('T')[0];
-  }
-
-  openDB(loadData);
-
-  function loadData() {
+function loadData() {
   getAll('expired', data => {
-    expiredData = (data || []).filter(
-      x => x.parentId === parentId
-    );
+    expiredData = (data || []).filter(x => x.parentId === parentId);
     render();
   });
 }
 
-  window.saveItem = function () {
-    if (!itemName.value || !duration.value) {
-      alert('Lengkapi data');
-      return;
-    }
-
-    addData('expired', {
-  id: Date.now(),
-  parentId: parentId,
-  name: itemName.value.trim(),
-  days: Number(duration.value),
-  openedDate: new Date().toISOString().split('T')[0]
-}, loadData);
-
-    itemName.value = '';
-    duration.value = '';
-  };
-
-  window.deleteItem = function (id) {
-    if (!confirm('Hapus item ini?')) return;
-    deleteData('expired', id, loadData);
-  };
-
-  window.editItem = function (id) {
-    const o = expiredData.find(x => x.id === id);
-    if (!o) return;
-
-    const n = prompt('Nama Item', o.name);
-    if (n === null) return;
-
-    const d = prompt('Masa Expired (hari)', o.days);
-    if (!d || isNaN(d)) return;
-
-    o.name = n.trim();
-    o.days = Number(d);
-
-    addData('expired', o, loadData);
-  };
-
-  window.printOne = function (id) {
-    const o = expiredData.find(x => x.id === id);
-    if (!o) return;
-
-    alert(
-`Tomoro Coffee
-${o.name}
-Opened : ${formatDate(o.openedDate)}
-Time : ${nowTime()}
-Masa exp : ${o.days} hari
-Expired : ${formatDate(calcExpired(o.days,o.openedDate))}`
-    );
-  };
-
-  window.printAll = function () {
-    let t = 'PRINT SEMUA\n\n';
-    expiredData.forEach(o => {
-      t += `${o.name}
-Opened : ${formatDate(o.openedDate)}
-Time : ${nowTime()}
-Masa exp : ${o.days} hari
-Expired : ${formatDate(calcExpired(o.days,o.openedDate))}\n\n`;
-    });
-    alert(t);
-  };
-
-  function render() {
-    list.innerHTML = '';
-    if (expiredData.length === 0) {
-      list.innerHTML = '<p class="empty">Belum ada item</p>';
-      return;
-    }
-
-    expiredData.forEach(o => {
-      list.innerHTML += `
-        <div class="order-card">
-          <div class="order-title">${o.name}</div>
-          <div class="order-meta">
-            Opened : ${formatDate(o.openedDate)}<br>
-            Time : <span class="live-time">${nowTime()}</span><br>
-            Masa exp : ${o.days} hari<br>
-            Expired : ${formatDate(calcExpired(o.days,o.openedDate))}
-          </div>
-          <div class="order-actions">
-            <button onclick="printOne(${o.id})">🖨️</button>
-            <button onclick="editItem(${o.id})">✏️</button>
-            <button onclick="deleteItem(${o.id})">🗑️</button>
-          </div>
-        </div>
-      `;
-    });
+/* ===== CRUD ===== */
+window.saveItem = function () {
+  if (!itemName.value || !duration.value) {
+    alert('Lengkapi data');
+    return;
   }
 
-  setInterval(() => {
-    document.querySelectorAll('.live-time')
-      .forEach(e => e.textContent = nowTime());
-  }, 60000);
-});
+  addData('expired', {
+    id: Date.now(),
+    parentId,
+    name: itemName.value.trim(),
+    days: Number(duration.value),
+    openedAt: new Date().toISOString()
+  }, loadData);
+
+  itemName.value = '';
+  duration.value = '';
+};
+
+window.editItem = function (id) {
+  const o = expiredData.find(x => x.id === id);
+  if (!o) return;
+
+  const n = prompt('Nama Item', o.name);
+  if (n === null) return;
+
+  const d = prompt('Masa Expired (hari)', o.days);
+  if (!d || isNaN(d)) return;
+
+  o.name = n.trim();
+  o.days = Number(d);
+  addData('expired', o, loadData);
+};
+
+window.deleteItem = function (id) {
+  if (!confirm('Hapus item ini?')) return;
+  deleteData('expired', id, loadData);
+};
+
+window.printOne = function (id) {
+  const o = expiredData.find(x => x.id === id);
+  if (!o) return;
+
+  alert(
+`Tomoro Coffee
+${o.name}
+Opened : ${formatDateTime(o.openedAt)}
+Masa exp : ${o.days} hari
+Expired : ${calcExpired(o.days, o.openedAt)}`
+  );
+};
+
+window.printAll = function () {
+  let t = 'PRINT SEMUA\n\n';
+  expiredData.forEach(o => {
+    t += `${o.name}
+Opened : ${formatDateTime(o.openedAt)}
+Masa exp : ${o.days} hari
+Expired : ${calcExpired(o.days, o.openedAt)}\n\n`;
+  });
+  alert(t);
+};
+
+/* ===== RENDER ===== */
+function render() {
+  list.innerHTML = '';
+  if (expiredData.length === 0) {
+    list.innerHTML = '<p class="empty">Belum ada item</p>';
+    return;
+  }
+
+  expiredData.forEach(o => {
+    list.innerHTML += `
+      <div class="expired-card">
+        <div class="expired-title">
+          Nama Item : ${o.name}
+        </div>
+
+        <div class="expired-meta">
+          Opened: ${formatDateTime(o.openedAt)}<br>
+          Masa exp: ${o.days} hari<br>
+          Expired: ${calcExpired(o.days, o.openedAt)}
+        </div>
+
+        <div class="expired-actions">
+          <button onclick="printOne(${o.id})">🖨️</button>
+          <button onclick="editItem(${o.id})">✏️</button>
+          <button onclick="deleteItem(${o.id})">🗑️</button>
+        </div>
+      </div>
+    `;
+  });
+}
 </script>
 
 </body>
