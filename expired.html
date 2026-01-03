@@ -50,6 +50,7 @@ content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable
   const params = new URLSearchParams(location.search);
   const id = Number(params.get('id'));
 
+  let editingId = null;
   let expired = JSON.parse(localStorage.getItem('expired')) || [];
   let data = expired.find(e => e.id === id);
 
@@ -130,24 +131,41 @@ content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable
   const o = data.orders.find(x => x.id === orderId);
   if (!o) return;
 
-  const newName = prompt('Edit nama item', o.name);
-  if (newName === null) return; // cancel
+  editingId = orderId;
 
-  const newDays = prompt('Edit masa expired (hari)', o.days);
-  if (newDays === null) return;
+  editName.value = o.name;
+  editDays.value = o.days;
 
-  const daysNumber = Number(newDays);
-  if (!newName.trim() || !daysNumber || daysNumber <= 0) {
-    alert('Data tidak valid');
+  document.getElementById('editModal').classList.remove('hidden');
+}
+
+  function closeEdit() {
+  document.getElementById('editModal').classList.add('hidden');
+  editingId = null;
+}
+
+  function saveEdit() {
+  if (!editingId) return;
+
+  const name = editName.value.trim();
+  const days = Number(editDays.value);
+
+  if (!name || !days) {
+    alert('Lengkapi data');
     return;
   }
 
-  o.name = newName.trim();
-  o.days = daysNumber;
+  const o = data.orders.find(x => x.id === editingId);
+  if (!o) return;
+
+  o.name = name;
+  o.days = days;
 
   localStorage.setItem('expired', JSON.stringify(expired));
+  closeEdit();
   render();
 }
+
 
   function deleteOrder(orderId) {
     if (!confirm('Hapus item ini?')) return;
@@ -179,6 +197,33 @@ Expired : ${formatDate(calculateExpired(o.days, o.opened))}\n\n`;
 
   render();
 </script>
+
+<!-- MODAL EDIT -->
+<div id="editModal" class="modal hidden">
+  <div class="modal-content">
+    <h3>Edit Item</h3>
+
+    <input id="editName" placeholder="Nama Item">
+
+    <select id="editDays">
+      <option value="">Pilih Masa Expired</option>
+      <option value="1">1 Hari</option>
+      <option value="2">2 Hari</option>
+      <option value="4">4 Hari</option>
+      <option value="7">7 Hari</option>
+      <option value="14">14 Hari</option>
+      <option value="30">1 Bulan</option>
+      <option value="60">2 Bulan</option>
+      <option value="90">3 Bulan</option>
+      <option value="180">6 Bulan</option>
+    </select>
+
+    <div class="modal-actions">
+      <button onclick="closeEdit()">Batal</button>
+      <button class="primary" onclick="saveEdit()">Simpan</button>
+    </div>
+  </div>
+</div>
 
 </body>
 </html>
