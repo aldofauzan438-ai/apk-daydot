@@ -1,6 +1,7 @@
 let db;
 const DB_NAME = 'daydotDB';
-const DB_VERSION = 1;
+const DB_VERSION = 3;
+;
 
 function openDB(callback) {
   const request = indexedDB.open(DB_NAME, DB_VERSION);
@@ -15,6 +16,9 @@ function openDB(callback) {
     if (!db.objectStoreNames.contains('expired')) {
       db.createObjectStore('expired', { keyPath: 'id' });
     }
+    if (!db.objectStoreNames.contains('expired_items')) {
+    db.createObjectStore('expired_items', { keyPath: 'id' });
+}
   };
 
   request.onsuccess = e => {

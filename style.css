@@ -205,3 +205,31 @@ footer {
   color: #999;
   margin: 30px 0 10px;
 }
+
+/* =====================
+   EXPIRED FORM (FIX TOTAL)
+===================== */
+.expired-form {
+  background: #fff;
+  border-radius: 20px;
+  padding: 16px;
+  margin-bottom: 18px;
+
+  display: flex;
+  flex-direction: column;   /* ⬅ PAKSA KE BAWAH */
+  gap: 14px;
+}
+
+.expired-form .input-box {
+  display: block;
+}
+
+.expired-form input,
+.expired-form select {
+  width: 100%;
+  display: block;
+}
+
+.expired-form button.primary {
+  width: 100%;
+}

@@ -12,7 +12,7 @@
 
 <h2>Detail Expired Item</h2>
 
-<div class="card">
+<div class="expired-form">
   <div class="input-box">
     <input id="itemName" placeholder="Nama Item">
   </div>
@@ -70,7 +70,7 @@ function calcExpired(days, iso) {
 openDB(loadData);
 
 function loadData() {
-  getAll('expired', data => {
+  getAll('expired_items', data => {
     expiredData = (data || []).filter(x => x.parentId === parentId);
     render();
   });
@@ -83,7 +83,7 @@ window.saveItem = function () {
     return;
   }
 
-  addData('expired', {
+  addData('expired_items', {
     id: Date.now(),
     parentId,
     name: itemName.value.trim(),
@@ -107,12 +107,12 @@ window.editItem = function (id) {
 
   o.name = n.trim();
   o.days = Number(d);
-  addData('expired', o, loadData);
+  addData('expired_items', o, loadData);
 };
 
 window.deleteItem = function (id) {
   if (!confirm('Hapus item ini?')) return;
-  deleteData('expired', id, loadData);
+  deleteData('expired_items', id, loadData);
 };
 
 window.printOne = function (id) {
