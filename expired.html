@@ -83,7 +83,7 @@ content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable
 
     data.orders.push({
       id: Date.now(),
-      name: name,       // ✅ FIX
+      name: name,       
       days: days,
       opened: getToday()
     });
@@ -93,6 +93,12 @@ content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable
     duration.value = '';
     render();
   }
+
+  function formatDate(dateStr) {
+  if (!dateStr) return '';
+  const [y, m, d] = dateStr.split('-');
+  return `${d}-${m}-${y}`;
+}
 
   function render() {
     list.innerHTML = '';
@@ -105,9 +111,9 @@ content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable
       div.innerHTML = `
         <div class="order-title">${o.name}</div>
         <div class="order-meta">
-          Opened: ${opened}<br>
+          Opened: ${formatDate(opened)}<br>
           Masa exp: ${o.days} hari<br>
-          Expired: ${calculateExpired(o.days, opened)}
+          Expired: ${formatDate(calculateExpired(o.days, opened))}
         </div>
 
         <div class="order-actions">
@@ -143,9 +149,9 @@ content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable
     alert(
 `Tomoro Coffee
 ${name}
-Opened : ${opened}
+Opened : ${formatDate(opened)}
 Masa exp : ${days} hari
-Expired : ${calculateExpired(days, opened)}`
+Expired : ${formatDate(calculateExpired(days, opened))}`
     );
   }
 
@@ -153,9 +159,9 @@ Expired : ${calculateExpired(days, opened)}`
     let text = 'PRINT SEMUA\n\n';
     data.orders.forEach(o => {
       text += `${o.name}
-Opened : ${o.opened}
+Opened : ${formatDate(o.opened)}
 Masa exp : ${o.days} hari
-Expired : ${calculateExpired(o.days, o.opened)}\n\n`;
+Expired : ${formatDate(calculateExpired(o.days, o.opened))}\n\n`;
     });
     alert(text);
   }
