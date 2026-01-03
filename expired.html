@@ -12,29 +12,29 @@
 
 <h2>Detail Expired Item</h2>
 
-<!-- ================= FORM INPUT ================= -->
-<div class="input-box">
-  <input id="itemName" placeholder="Nama Item">
+<div class="card">
+
+  <div class="input-box">
+    <input id="itemName" placeholder="Nama Item">
+  </div>
+
+  <div class="input-box">
+    <select id="duration">
+      <option value="">Pilih Masa Expired</option>
+      <option value="1">1 Hari</option>
+      <option value="2">2 Hari</option>
+      <option value="4">4 Hari</option>
+      <option value="7">7 Hari</option>
+      <option value="14">14 Hari</option>
+      <option value="30">1 Bulan</option>
+      <option value="60">2 Bulan</option>
+      <option value="90">3 Bulan</option>
+      <option value="180">6 Bulan</option>
+    </select>
+  </div>
+
+  <button class="primary" onclick="saveOrder()">Simpan</button>
 </div>
-
-<div class="input-box">
-  <select id="duration">
-    <option value="">Pilih Masa Expired</option>
-    <option value="1">1 Hari</option>
-    <option value="2">2 Hari</option>
-    <option value="4">4 Hari</option>
-    <option value="7">7 Hari</option>
-    <option value="14">14 Hari</option>
-    <option value="30">1 Bulan</option>
-    <option value="60">2 Bulan</option>
-    <option value="90">3 Bulan</option>
-    <option value="180">6 Bulan</option>
-  </select>
-</div>
-
-<button class="primary" onclick="saveOrder()">Simpan</button>
-
-<hr>
 
 <div class="print-all">
   <span onclick="printAll()">🖨️ Print Semua</span>
@@ -43,38 +43,31 @@
 <h3>Daftar Item</h3>
 <div id="list"></div>
 
-<a href="index.html">⬅ Kembali</a>
+<a class="back" href="index.html">⬅ Kembali</a>
 
-<!-- ================= DATABASE ================= -->
 <script src="db.js"></script>
-
-<!-- ================= SCRIPT ================= -->
 <script>
+let currentTemplate = null;
+
 document.addEventListener('DOMContentLoaded', () => {
 
   const list = document.getElementById('list');
   const itemName = document.getElementById('itemName');
   const duration = document.getElementById('duration');
 
-  const params = new URLSearchParams(location.search);
-  const templateId = Number(params.get('id'));
-
-  if (!templateId) {
-    list.innerHTML = '<p>ID template tidak valid</p>';
+  const id = Number(new URLSearchParams(location.search).get('id'));
+  if (!id) {
+    list.innerHTML = '<p>ID tidak valid</p>';
     return;
   }
 
-  /* ================= UTIL ================= */
-  function formatDateShort(d) {
+  function formatDate(d) {
     const [y,m,da] = d.split('-');
     return `${da}-${m}-${y.slice(2)}`;
   }
 
-  function getLiveTime() {
-    return new Date().toLocaleTimeString('id-ID', {
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+  function nowTime() {
+    return new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
   }
 
   function calcExpired(days, date) {
@@ -83,127 +76,119 @@ document.addEventListener('DOMContentLoaded', () => {
     return d.toISOString().split('T')[0];
   }
 
-  /* ================= LOAD DATA ================= */
   openDB(() => {
-    getTemplateById(templateId, data => {
-
+    getTemplateById(id, data => {
       if (!data) {
-        list.innerHTML = '<p>Data template tidak ditemukan</p>';
+        list.innerHTML = '<p>Data tidak ditemukan</p>';
         return;
       }
-
       if (!data.orders) data.orders = [];
-
-      /* ================= SIMPAN ================= */
-      window.saveOrder = function () {
-        if (!itemName.value || !duration.value) {
-          alert('Lengkapi data');
-          return;
-        }
-
-        data.orders.push({
-          id: Date.now(),
-          name: itemName.value.trim(),
-          days: Number(duration.value),
-          openedDate: new Date().toISOString().split('T')[0]
-        });
-
-        saveTemplate(data, render);
-        itemName.value = '';
-        duration.value = '';
-      };
-
-      /* ================= PRINT SEMUA ================= */
-      window.printAll = function () {
-        let text = 'PRINT SEMUA\n\n';
-        data.orders.forEach(o => {
-          text += `${o.name}
-Opened : ${formatDateShort(o.openedDate)}
-Time : ${getLiveTime()}
-Masa exp : ${o.days} hari
-Expired : ${formatDateShort(calcExpired(o.days, o.openedDate))}\n\n`;
-        });
-        alert(text);
-      };
-
-      /* ================= PRINT SATU ================= */
-      window.printOne = function (id) {
-        const o = data.orders.find(x => x.id === id);
-        if (!o) return;
-
-        alert(
-`Tomoro Coffee
-${o.name}
-Opened : ${formatDateShort(o.openedDate)}
-Time : ${getLiveTime()}
-Masa exp : ${o.days} hari
-Expired : ${formatDateShort(calcExpired(o.days, o.openedDate))}`
-        );
-      };
-
-      /* ================= EDIT ================= */
-      window.editOrder = function (id) {
-        const o = data.orders.find(x => x.id === id);
-        if (!o) return;
-
-        const newName = prompt('Nama Item', o.name);
-        if (newName === null) return;
-
-        const newDays = prompt('Masa Expired (hari)', o.days);
-        if (!newDays || isNaN(newDays)) return;
-
-        o.name = newName.trim();
-        o.days = Number(newDays);
-        saveTemplate(data, render);
-      };
-
-      /* ================= HAPUS ================= */
-      window.deleteOrder = function (id) {
-        if (!confirm('Hapus item ini?')) return;
-        data.orders = data.orders.filter(o => o.id !== id);
-        saveTemplate(data, render);
-      };
-
-      /* ================= RENDER ================= */
-      function render() {
-        list.innerHTML = '';
-
-        if (data.orders.length === 0) {
-          list.innerHTML = '<p>Belum ada item</p>';
-          return;
-        }
-
-        data.orders.forEach(o => {
-          list.innerHTML += `
-            <div class="order-card">
-              <div class="order-title">${o.name}</div>
-
-              <div class="order-meta">
-                Opened : ${formatDateShort(o.openedDate)}<br>
-                Time : <span class="live-time">${getLiveTime()}</span><br>
-                Masa exp : ${o.days} hari<br>
-                Expired : ${formatDateShort(calcExpired(o.days, o.openedDate))}
-              </div>
-
-              <div class="order-actions">
-                <button onclick="printOne(${o.id})">🖨️</button>
-                <button onclick="editOrder(${o.id})">✏️</button>
-                <button onclick="deleteOrder(${o.id})">🗑️</button>
-              </div>
-            </div>
-          `;
-        });
-      }
-
-      /* ================= LIVE TIME ================= */
-      setInterval(() => {
-        document.querySelectorAll('.live-time')
-          .forEach(el => el.textContent = getLiveTime());
-      }, 60000);
-
+      currentTemplate = data;
       render();
     });
   });
+
+  /* ===== SIMPAN (GLOBAL & AMAN) ===== */
+  window.saveOrder = function () {
+    if (!currentTemplate) {
+      alert('Data belum siap, coba lagi');
+      return;
+    }
+
+    if (!itemName.value || !duration.value) {
+      alert('Lengkapi data');
+      return;
+    }
+
+    currentTemplate.orders.push({
+      id: Date.now(),
+      name: itemName.value.trim(),
+      days: Number(duration.value),
+      openedDate: new Date().toISOString().split('T')[0]
+    });
+
+    saveTemplate(currentTemplate, render);
+    itemName.value = '';
+    duration.value = '';
+  };
+
+  window.printAll = function () {
+    let t = 'PRINT SEMUA\n\n';
+    currentTemplate.orders.forEach(o => {
+      t += `${o.name}
+Opened : ${formatDate(o.openedDate)}
+Time : ${nowTime()}
+Masa exp : ${o.days} hari
+Expired : ${formatDate(calcExpired(o.days,o.openedDate))}\n\n`;
+    });
+    alert(t);
+  };
+
+  window.printOne = function (oid) {
+    const o = currentTemplate.orders.find(x => x.id === oid);
+    if (!o) return;
+    alert(
+`Tomoro Coffee
+${o.name}
+Opened : ${formatDate(o.openedDate)}
+Time : ${nowTime()}
+Masa exp : ${o.days} hari
+Expired : ${formatDate(calcExpired(o.days,o.openedDate))}`
+    );
+  };
+
+  window.editOrder = function (oid) {
+    const o = currentTemplate.orders.find(x => x.id === oid);
+    if (!o) return;
+
+    const n = prompt('Nama Item', o.name);
+    if (n === null) return;
+    const d = prompt('Masa Expired (hari)', o.days);
+    if (!d || isNaN(d)) return;
+
+    o.name = n.trim();
+    o.days = Number(d);
+    saveTemplate(currentTemplate, render);
+  };
+
+  window.deleteOrder = function (oid) {
+    if (!confirm('Hapus item ini?')) return;
+    currentTemplate.orders =
+      currentTemplate.orders.filter(o => o.id !== oid);
+    saveTemplate(currentTemplate, render);
+  };
+
+  function render() {
+    list.innerHTML = '';
+    if (currentTemplate.orders.length === 0) {
+      list.innerHTML = '<p class="empty">Belum ada item</p>';
+      return;
+    }
+
+    currentTemplate.orders.forEach(o => {
+      list.innerHTML += `
+        <div class="order-card">
+          <div class="order-title">${o.name}</div>
+          <div class="order-meta">
+            Opened : ${formatDate(o.openedDate)}<br>
+            Time : <span class="live-time">${nowTime()}</span><br>
+            Masa exp : ${o.days} hari<br>
+            Expired : ${formatDate(calcExpired(o.days,o.openedDate))}
+          </div>
+          <div class="order-actions">
+            <button onclick="printOne(${o.id})">🖨️</button>
+            <button onclick="editOrder(${o.id})">✏️</button>
+            <button onclick="deleteOrder(${o.id})">🗑️</button>
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  setInterval(() => {
+    document.querySelectorAll('.live-time')
+      .forEach(e => e.textContent = nowTime());
+  }, 60000);
 });
 </script>
 
