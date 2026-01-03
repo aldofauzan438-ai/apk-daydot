@@ -49,24 +49,14 @@ content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable
 <script>
 document.addEventListener('DOMContentLoaded', () => {
 
-  const id = Number(new URLSearchParams(location.search).get('id')) || 1;
-
-let expired = JSON.parse(localStorage.getItem('expired')) || [];
-let data = expired.find(e => e.id === id);
-
-if (!data) {
-  data = { id, orders: [] };
-  expired.push(data);
-}
-
-
   const list = document.getElementById('list');
   const itemName = document.getElementById('itemName');
   const duration = document.getElementById('duration');
 
+  let data = JSON.parse(localStorage.getItem('expiredData')) || { orders: [] };
+
   function formatDateShort(dateStr) {
-    if (!dateStr) return '';
-    const [y, m, d] = dateStr.split('-');
+    const [y,m,d] = dateStr.split('-');
     return `${d}-${m}-${y.slice(2)}`;
   }
 
@@ -74,133 +64,53 @@ if (!data) {
     return new Date().toTimeString().slice(0,5);
   }
 
-  function getNow() {
-    const d = new Date();
-    return {
-      date: d.toISOString().split('T')[0],
-      time: d.toTimeString().slice(0,5)
-    };
-  }
-
   function calculateExpired(days, openedDate) {
     const d = new Date(openedDate);
     d.setDate(d.getDate() + days);
-    return { date: d.toISOString().split('T')[0] };
+    return d.toISOString().split('T')[0];
   }
 
-  window.saveOrder = function() {
-  const name = itemName.value.trim();
-  const days = Number(duration.value);
-  const now = getNow();
+  window.saveOrder = function () {
+    if (!itemName.value || !duration.value) return alert('Lengkapi data');
 
-  if (!name || !days) {
-    alert('Lengkapi data');
-    return;
-  }
+    data.orders.push({
+      id: Date.now(),
+      name: itemName.value,
+      days: Number(duration.value),
+      openedDate: new Date().toISOString().split('T')[0]
+    });
 
-  data.orders.push({
-    id: Date.now(),
-    name,
-    days,
-    openedDate: now.date
-  });
-
-  localStorage.setItem('expired', JSON.stringify(expired));
-  itemName.value = '';
-  duration.value = '';
-  render();
-};
-
+    localStorage.setItem('expiredData', JSON.stringify(data));
+    itemName.value = '';
+    duration.value = '';
+    render();
+  };
 
   function render() {
     list.innerHTML = '';
 
     data.orders.forEach(o => {
       const exp = calculateExpired(o.days, o.openedDate);
-
-      const div = document.createElement('div');
-      div.className = 'order-card';
-      div.innerHTML = `
-        <div class="order-title">Nama Item : ${o.name}</div>
-        <div class="order-meta">
-          Opened   : ${formatDateShort(o.openedDate)}<br>
-          Time     : <span class="live-time">${getLiveTime()}</span><br>
+      list.innerHTML += `
+        <div class="order-card">
+          <b>Nama Item : ${o.name}</b><br>
+          Opened : ${formatDateShort(o.openedDate)}<br>
+          Time : <span class="live-time">${getLiveTime()}</span><br>
           Masa exp : ${o.days} hari<br>
-          Expired  : ${formatDateShort(exp.date)}
-        </div>
-
-        <div class="order-actions">
-          <button onclick="printOne('${o.name}', ${o.days}, '${o.openedDate}')">🖨️</button>
-          <button onclick="editOrder(${o.id})">✏️</button>
-          <button onclick="deleteOrder(${o.id})">🗑️</button>
+          Expired : ${formatDateShort(exp)}
         </div>
       `;
-      list.appendChild(div);
     });
   }
-
-  window.editOrder = function(id) {
-  const o = data.orders.find(x => x.id === id);
-  if (!o) return;
-
-  const newName = prompt('Edit nama item', o.name);
-  if (newName === null) return;
-
-  const newDays = prompt('Edit masa expired (hari)', o.days);
-  if (!newDays) return;
-
-  o.name = newName.trim();
-  o.days = Number(newDays);
-
-  localStorage.setItem('expired', JSON.stringify(expired));
-  render();
-};
-
-  window.deleteOrder = function(id) {
-  if (!confirm('Hapus item ini?')) return;
-  data.orders = data.orders.filter(o => o.id !== id);
-  localStorage.setItem('expired', JSON.stringify(expired));
-  render();
-};
-
-
-  window.printOne = function(name, days, openedDate) {
-    const exp = calculateExpired(days, openedDate);
-    alert(
-`Tomoro Coffee
-Nama Item : ${name}
-Opened    : ${formatDateShort(openedDate)}
-Time      : ${getLiveTime()}
-Masa exp  : ${days} hari
-Expired   : ${formatDateShort(exp.date)}`
-    );
-  }
-
-  window.printAll = function() {
-    let text = 'PRINT SEMUA\n\n';
-    const now = getLiveTime();
-
-    data.orders.forEach(o => {
-      const exp = calculateExpired(o.days, o.openedDate);
-      text += `${o.name}
-Opened    : ${formatDateShort(o.openedDate)}
-Time      : ${now}
-Masa exp  : ${o.days} hari
-Expired   : ${formatDateShort(exp.date)}\n\n`;
-    });
-
-    alert(text);
-  }
-
-  render();
 
   setInterval(() => {
-    document.querySelectorAll('.live-time').forEach(el => {
-      el.textContent = getLiveTime();
-    });
+    document.querySelectorAll('.live-time')
+      .forEach(el => el.textContent = getLiveTime());
   }, 60000);
 
+  render();
 });
+
 </script>
 
 
