@@ -121,36 +121,39 @@ function loadTemplateName() {
    SEARCH
 ===================== */
 searchInput.addEventListener('input', () => {
-  const q = searchInput.value.toLowerCase();
+  const q = searchInput.value.trim().toLowerCase();
 
   if (!q) {
     searchResult.innerHTML = '';
     return;
   }
 
-  renderSearchResults(
-    allExpired.filter(x => x.name.toLowerCase().includes(q)).slice(0, 5)
-  );
+  const results = allExpired
+    .filter(x => x.name.toLowerCase().includes(q))
+    .slice(0, 5);
+
+  renderSearchResults(results);
 });
+
 
 /* =====================
    ADD TO TEMPLATE
 ===================== */
-function addToTemplate(expiredId) {
+function addToTemplate(expired) {
   addData('template_items', {
     id: Date.now(),
     templateId,
-    expiredId
+    expiredId: expired.id
   }, () => {
-    // reset search
-    searchInput.value = '';
-    searchResult.innerHTML = '';
-    searchInput.blur();
-
     showToast('Berhasil ditambahkan', 'success');
+
+    searchInput.value = '';        // ⬅ reset input
+    searchResult.innerHTML = '';   // ⬅ hapus hasil search
+
     loadTemplateItems();
   });
 }
+
 
 /* =====================
    PRINT
@@ -196,7 +199,7 @@ function renderSearchResults(items) {
   items.forEach(item => {
     searchResult.innerHTML += `
       <div class="expired-card clickable"
-           onclick="addToTemplate(${item.id})">
+           onclick='addToTemplate(${JSON.stringify(item)})'>
         <strong>${item.name}</strong>
       </div>
     `;
