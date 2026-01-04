@@ -9,6 +9,8 @@
 </head>
 
 <body class="container">
+<div id="toast" class="toast"></div>
+
 
 <h2>Template</h2>
 
@@ -24,7 +26,8 @@
 
 <hr>
 
-<h3>Item Dalam Template</h3>
+<h3 id="templateTitle">Item Dalam Template</h3>
+
 <div class="print-all">
   <span onclick="printAll()">🖨️ Print Semua</span>
 </div>
@@ -117,8 +120,17 @@ function addToTemplate(expiredId) {
     id: Date.now(),
     templateId,
     expiredId
-  }, loadTemplateItems);
+  }, () => {
+    // reset search
+    searchInput.value = '';
+    searchResult.innerHTML = '';
+    searchInput.blur();
+
+    showToast('Berhasil ditambahkan', 'success');
+    loadTemplateItems();
+  });
 }
+
 /* =====================
    PRINT
 ===================== */
@@ -171,6 +183,9 @@ function renderSearchResults(items) {
 }
 
 function renderTemplateItems(items) {
+  const title = document.getElementById('templateTitle');
+  title.textContent = `Item Dalam Template (${items.length})`;
+
   list.innerHTML = '';
 
   if (!items.length) {
@@ -181,12 +196,11 @@ function renderTemplateItems(items) {
   items.forEach(o => {
     list.innerHTML += `
       <div class="expired-card">
-        <div class="expired-title">
-          ${o.name}
-        </div>
+        <div class="expired-title">${o.name}</div>
 
         <div class="expired-meta">
           Opened : ${formatDate(o.openedAt)}<br>
+          Time : <span class="live-time"></span><br>
           Masa exp : ${o.days} hari<br>
           Expired : ${calcExpired(o.days, o.openedAt)}
         </div>
@@ -197,6 +211,26 @@ function renderTemplateItems(items) {
         </div>
       </div>
     `;
+  });
+}
+
+
+function showToast(text, type = 'success') {
+  const toast = document.getElementById('toast');
+  toast.textContent = text;
+  toast.className = 'toast show' + (type === 'error' ? ' error' : '');
+
+  setTimeout(() => {
+    toast.className = 'toast';
+  }, 2000);
+}
+
+function removeFromTemplate(templateItemId) {
+  if (!confirm('Hapus item dari template?')) return;
+
+  deleteData('template_items', templateItemId, () => {
+    showToast('Berhasil dihapus', 'error');
+    loadTemplateItems();
   });
 }
 
