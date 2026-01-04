@@ -228,6 +228,7 @@ function renderTemplateItems(items) {
 
         <div class="expired-meta">
           Opened : ${formatDate(o.openedAt)}<br>
+          Time : <span class="live-time"></span><br>
           Masa exp : ${o.days} hari<br>
           Expired : ${calcExpired(o.days, o.openedAt)}
         </div>
