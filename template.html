@@ -12,7 +12,8 @@
 <div id="toast" class="toast"></div>
 
 
-<h2>Template</h2>
+<h2 id="templateTitle">Template</h2>
+
 
 <!-- SEARCH EXPIRED -->
 <div class="expired-form">
@@ -70,8 +71,10 @@ function calcExpired(days, iso) {
 ===================== */
 openDB(() => {
   getAll('expired_items', d => allExpired = d || []);
+  loadTemplateTitle();
   loadTemplateItems();
 });
+
 
 function loadTemplateItems() {
   getAll('template_items', templateLinks => {
@@ -94,6 +97,17 @@ function loadTemplateItems() {
     });
   });
 }
+
+function loadTemplateTitle() {
+  getAll('templates', templates => {
+    const t = (templates || []).find(x => x.id === templateId);
+    if (t) {
+      document.getElementById('templateTitle').textContent =
+        `Template – ${t.name}`;
+    }
+  });
+}
+
 
 
 /* =====================
@@ -215,23 +229,31 @@ function renderTemplateItems(items) {
 }
 
 
+let toastTimer = null;
+
 function showToast(text, type = 'success') {
   const toast = document.getElementById('toast');
+
+  // reset total
+  toast.className = 'toast';
   toast.textContent = text;
-  toast.className = 'toast show' + (type === 'error' ? ' error' : '');
 
-  setTimeout(() => {
-    toast.className = 'toast';
+  // set warna
+  if (type === 'error') {
+    toast.classList.add('error');
+  }
+
+  // force reflow (biar animasi selalu jalan)
+  void toast.offsetWidth;
+
+  toast.classList.add('show');
+
+  // clear timer lama
+  if (toastTimer) clearTimeout(toastTimer);
+
+  toastTimer = setTimeout(() => {
+    toast.classList.remove('show');
   }, 2000);
-}
-
-function removeFromTemplate(templateItemId) {
-  if (!confirm('Hapus item dari template?')) return;
-
-  deleteData('template_items', templateItemId, () => {
-    showToast('Berhasil dihapus', 'error');
-    loadTemplateItems();
-  });
 }
 
 
