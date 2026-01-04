@@ -12,27 +12,24 @@
 <div id="toast" class="toast"></div>
 
 
-<h2 id="templateTitle">Template</h2>
+<h2 id="templateName">Template</h2>
 
-
-<!-- SEARCH EXPIRED -->
+<!-- SEARCH -->
 <div class="expired-form">
   <div class="input-box">
     <input id="searchExpired" placeholder="Cari expired item...">
   </div>
 </div>
 
-<!-- HASIL SEARCH -->
-<div id="searchResult" class="search-result"></div>
-
 <hr>
 
-<h3 id="templateTitle">Item Dalam Template</h3>
-
+<h3 id="templateCount">Item Dalam Template (0)</h3>
 <div class="print-all">
   <span onclick="printAll()">🖨️ Print Semua</span>
 </div>
+
 <div id="list"></div>
+
 
 <a class="back" href="index.html">⬅ Kembali</a>
 
@@ -71,7 +68,7 @@ function calcExpired(days, iso) {
 ===================== */
 openDB(() => {
   getAll('expired_items', d => allExpired = d || []);
-  loadTemplateTitle();
+  loadTemplateName();      // ⬅ INI
   loadTemplateItems();
 });
 
@@ -98,15 +95,25 @@ function loadTemplateItems() {
   });
 }
 
-function loadTemplateTitle() {
+function loadTemplateName() {
   getAll('templates', templates => {
     const t = (templates || []).find(x => x.id === templateId);
     if (t) {
-      document.getElementById('templateTitle').textContent =
-        `Template – ${t.name}`;
+      document.getElementById('templateName').textContent = t.name;
     }
   });
 }
+
+
+// function loadTemplateTitle() {
+//   getAll('templates', templates => {
+//     const t = (templates || []).find(x => x.id === templateId);
+//     if (t) {
+//       document.getElementById('templateTitle').textContent =
+//         `Template – ${t.name}`;
+//     }
+//   });
+// }
 
 
 
@@ -197,8 +204,8 @@ function renderSearchResults(items) {
 }
 
 function renderTemplateItems(items) {
-  const title = document.getElementById('templateTitle');
-  title.textContent = `Item Dalam Template (${items.length})`;
+  const count = document.getElementById('templateCount');
+  count.textContent = `Item Dalam Template (${items.length})`;
 
   list.innerHTML = '';
 
@@ -214,7 +221,6 @@ function renderTemplateItems(items) {
 
         <div class="expired-meta">
           Opened : ${formatDate(o.openedAt)}<br>
-          Time : <span class="live-time"></span><br>
           Masa exp : ${o.days} hari<br>
           Expired : ${calcExpired(o.days, o.openedAt)}
         </div>
@@ -259,8 +265,13 @@ function showToast(text, type = 'success') {
 
 function removeFromTemplate(templateItemId) {
   if (!confirm('Hapus item dari template?')) return;
-  deleteData('template_items', templateItemId, loadTemplateItems);
+
+  deleteData('template_items', templateItemId, () => {
+    showToast('Berhasil dihapus', 'error');
+    loadTemplateItems();
+  });
 }
+
 
 function updateTime() {
   document.querySelectorAll('.live-time')
