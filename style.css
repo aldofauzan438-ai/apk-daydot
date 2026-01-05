@@ -419,3 +419,19 @@ footer {
 .printer-chip.disconnected .printer-title {
   color: #e74c3c;
 }
+
+/* ===== CONNECTING ANIMATION ===== */
+.printer-chip.connecting {
+  border-left: 6px solid #f1c40f;
+}
+
+.printer-chip.connecting .status-dot {
+  background: #f1c40f;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.5); opacity: .5; }
+  100% { transform: scale(1); opacity: 1; }
+}

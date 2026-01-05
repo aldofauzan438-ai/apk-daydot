@@ -297,48 +297,81 @@ setInterval(updateTime, 1000);
 
 // ===== PRINTER STATE =====
 const printer = {
-  connected: false,
+  status: 'disconnected', // disconnected | connecting | connected
   device: 'CPJKT14D',
   ip: '192.168.50.146',
   port: '9100',
   type: 'Bluetooth'
 };
 
+
 function renderPrinter() {
   const el = document.getElementById('printerStatus');
-  if (!el) return;
-
   const title = el.querySelector('.printer-title');
   const desc  = el.querySelector('.printer-desc');
 
-  if (printer.connected) {
-    el.classList.remove('disconnected');
+  el.classList.remove('connected', 'disconnected', 'connecting');
+
+  if (printer.status === 'connected') {
     el.classList.add('connected');
     title.textContent = 'Printer Connected';
     desc.textContent =
       `${printer.device} • ${printer.ip}:${printer.port}`;
+
+  } else if (printer.status === 'connecting') {
+    el.classList.add('connecting');
+    title.textContent = 'Menghubungkan...';
+    desc.textContent = 'Bluetooth printer';
+
   } else {
-    el.classList.remove('connected');
     el.classList.add('disconnected');
     title.textContent = 'Printer Offline';
     desc.textContent = 'Tap untuk hubungkan';
   }
 }
 
-// TAP ANIMATION + SIMULASI CONNECT
-function togglePrinter() {
-  if (printer.connected) {
-    printer.connected = false;
+async function togglePrinter() {
+  if (printer.status === 'connected') {
+    printer.status = 'disconnected';
     showToast('Printer terputus', 'error');
-  } else {
-    printer.connected = true;
-    showToast('Printer terhubung', 'success');
+    renderPrinter();
+    return;
   }
+
+  printer.status = 'connecting';
   renderPrinter();
+
+  // simulasi delay connect
+  setTimeout(() => {
+    printer.status = 'connected';
+    showToast('Printer terhubung', 'success');
+    renderPrinter();
+  }, 2000);
 }
 
-// INIT
-renderPrinter();
+async function connectBluetoothReal() {
+  try {
+    printer.status = 'connecting';
+    renderPrinter();
+
+    const device = await navigator.bluetooth.requestDevice({
+      filters: [{ namePrefix: 'CPJKT' }],
+      optionalServices: []
+    });
+
+    printer.device = device.name;
+    printer.status = 'connected';
+
+    showToast('Printer Bluetooth terhubung', 'success');
+    renderPrinter();
+
+  } catch (e) {
+    printer.status = 'disconnected';
+    showToast('Gagal menghubungkan printer', 'error');
+    renderPrinter();
+  }
+}
+
 
 
 
