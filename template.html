@@ -12,15 +12,21 @@
 <div id="toast" class="toast"></div>
 
 <!-- PRINTER STATUS -->
-<div id="printerStatus" class="printer-status connected">
-  <div class="printer-icon">🖨️</div>
-  <div class="printer-info">
-    <div class="printer-name">CPJKT14D</div>
-    <div class="printer-meta">
-      Bluetooth • 192.168.50.146:9100
-    </div>
+<div id="printerStatus"
+     class="printer-chip disconnected"
+     onclick="togglePrinter()">
+
+  <div class="printer-icon">
+    🖨️
+    <span class="status-dot"></span>
+  </div>
+
+  <div class="printer-text">
+    <div class="printer-title">Printer Offline</div>
+    <div class="printer-desc">Tap untuk hubungkan</div>
   </div>
 </div>
+
 
 
 <h2 id="templateName">Template</h2>
@@ -289,40 +295,51 @@ function updateTime() {
 }
 setInterval(updateTime, 1000);
 
-// ===== PRINTER STATUS (SIMULASI POS) =====
-const printerConfig = {
-  connected: true,
+// ===== PRINTER STATE =====
+const printer = {
+  connected: false,
   device: 'CPJKT14D',
   ip: '192.168.50.146',
   port: '9100',
-  connection: 'Bluetooth'
+  type: 'Bluetooth'
 };
 
-function renderPrinterStatus() {
+function renderPrinter() {
   const el = document.getElementById('printerStatus');
   if (!el) return;
 
-  if (printerConfig.connected) {
-    el.classList.add('connected');
+  const title = el.querySelector('.printer-title');
+  const desc  = el.querySelector('.printer-desc');
+
+  if (printer.connected) {
     el.classList.remove('disconnected');
-    el.querySelector('.printer-name').textContent = printerConfig.device;
-    el.querySelector('.printer-meta').textContent =
-      `${printerConfig.connection} • ${printerConfig.ip}:${printerConfig.port}`;
+    el.classList.add('connected');
+    title.textContent = 'Printer Connected';
+    desc.textContent =
+      `${printer.device} • ${printer.ip}:${printer.port}`;
   } else {
-    el.classList.add('disconnected');
     el.classList.remove('connected');
-    el.querySelector('.printer-name').textContent = 'Printer Offline';
-    el.querySelector('.printer-meta').textContent = 'Tidak terhubung';
+    el.classList.add('disconnected');
+    title.textContent = 'Printer Offline';
+    desc.textContent = 'Tap untuk hubungkan';
   }
 }
 
-renderPrinterStatus();
+// TAP ANIMATION + SIMULASI CONNECT
+function togglePrinter() {
+  if (printer.connected) {
+    printer.connected = false;
+    showToast('Printer terputus', 'error');
+  } else {
+    printer.connected = true;
+    showToast('Printer terhubung', 'success');
+  }
+  renderPrinter();
+}
 
-// simulasi putus setelah 5 detik
-setTimeout(() => {
-  printerConfig.connected = false;
-  renderPrinterStatus();
-}, 5000);
+// INIT
+renderPrinter();
+
 
 
 </script>

@@ -342,3 +342,80 @@ footer {
   border-left: 6px solid #e74c3c;
   opacity: .6;
 }
+
+/* ===== PRINTER CHIP ===== */
+.printer-chip {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff;
+  padding: 10px 14px;
+  border-radius: 999px;
+  box-shadow: 0 6px 18px rgba(0,0,0,.12);
+  font-size: 13px;
+  z-index: 1000;
+  cursor: pointer;
+  user-select: none;
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+
+.printer-chip:active {
+  transform: scale(.96);
+  box-shadow: 0 3px 10px rgba(0,0,0,.15);
+}
+
+.printer-icon {
+  position: relative;
+  font-size: 22px;
+}
+
+.status-dot {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  background: #e74c3c;
+}
+
+.printer-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.printer-title {
+  font-weight: 600;
+}
+
+.printer-desc {
+  font-size: 11px;
+  color: #666;
+}
+
+/* ===== CONNECTED ===== */
+.printer-chip.connected {
+  border-left: 6px solid #2ecc71;
+}
+
+.printer-chip.connected .status-dot {
+  background: #2ecc71;
+}
+
+.printer-chip.connected .printer-title {
+  color: #2ecc71;
+}
+
+/* ===== DISCONNECTED ===== */
+.printer-chip.disconnected {
+  border-left: 6px solid #e74c3c;
+}
+
+.printer-chip.disconnected .printer-title {
+  color: #e74c3c;
+}
