@@ -11,6 +11,17 @@
 <body class="container">
 <div id="toast" class="toast"></div>
 
+<!-- PRINTER STATUS -->
+<div id="printerStatus" class="printer-status connected">
+  <div class="printer-icon">🖨️</div>
+  <div class="printer-info">
+    <div class="printer-name">CPJKT14D</div>
+    <div class="printer-meta">
+      Bluetooth • 192.168.50.146:9100
+    </div>
+  </div>
+</div>
+
 
 <h2 id="templateName">Template</h2>
 
@@ -109,15 +120,6 @@ function loadTemplateName() {
 }
 
 
-// function loadTemplateTitle() {
-//   getAll('templates', templates => {
-//     const t = (templates || []).find(x => x.id === templateId);
-//     if (t) {
-//       document.getElementById('templateTitle').textContent =
-//         `Template – ${t.name}`;
-//     }
-//   });
-// }
 
 
 
@@ -286,6 +288,43 @@ function updateTime() {
     .forEach(e => e.textContent = liveTime());
 }
 setInterval(updateTime, 1000);
+
+// ===== PRINTER STATUS (SIMULASI POS) =====
+const printerConfig = {
+  connected: true,
+  device: 'CPJKT14D',
+  ip: '192.168.50.146',
+  port: '9100',
+  connection: 'Bluetooth'
+};
+
+function renderPrinterStatus() {
+  const el = document.getElementById('printerStatus');
+  if (!el) return;
+
+  if (printerConfig.connected) {
+    el.classList.add('connected');
+    el.classList.remove('disconnected');
+    el.querySelector('.printer-name').textContent = printerConfig.device;
+    el.querySelector('.printer-meta').textContent =
+      `${printerConfig.connection} • ${printerConfig.ip}:${printerConfig.port}`;
+  } else {
+    el.classList.add('disconnected');
+    el.classList.remove('connected');
+    el.querySelector('.printer-name').textContent = 'Printer Offline';
+    el.querySelector('.printer-meta').textContent = 'Tidak terhubung';
+  }
+}
+
+renderPrinterStatus();
+
+// simulasi putus setelah 5 detik
+setTimeout(() => {
+  printerConfig.connected = false;
+  renderPrinterStatus();
+}, 5000);
+
+
 </script>
 
 </body>

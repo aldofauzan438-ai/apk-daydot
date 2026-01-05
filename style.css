@@ -297,3 +297,48 @@ footer {
 .toast.error {
   background: #e74c3c;
 }
+
+/* ===== PRINTER STATUS ===== */
+.printer-status {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff;
+  padding: 8px 12px;
+  border-radius: 14px;
+  box-shadow: 0 4px 14px rgba(0,0,0,.08);
+  font-size: 12px;
+  z-index: 999;
+}
+
+.printer-icon {
+  font-size: 20px;
+}
+
+.printer-info {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.printer-name {
+  font-weight: 600;
+}
+
+.printer-meta {
+  font-size: 11px;
+  color: #666;
+}
+
+/* STATUS */
+.printer-status.connected {
+  border-left: 6px solid #2ecc71;
+}
+
+.printer-status.disconnected {
+  border-left: 6px solid #e74c3c;
+  opacity: .6;
+}
